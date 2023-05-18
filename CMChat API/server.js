@@ -5,11 +5,18 @@ const socketIO = require("socket.io");
 const PORT = 8081;
 
 const app = express();
+app.use(cors({ origin: "*" }));
 const server = http.createServer(app);
-const io = socketIO(server);
+const io = socketIO(server, {
+  cors: {
+    origin: "*", // Allow requests from any origin
+    methods: ["GET", "POST"], // Allow only GET and POST requests
+    allowedHeaders: ["Content-Type"], // Allow only specific headers
+  },
+});
 
 io.on("connection", (socket) => {
-  console.log("A user connected!");
+  console.log("A user connected! " + socket.id);
 
   socket.on("disconnect", () => {
     console.log("A client disconnected");
@@ -17,6 +24,7 @@ io.on("connection", (socket) => {
 
   socket.on("newMessage", (message) => {
     console.log("New message received:", message);
+    io.emit("newMessage", "kek");
   });
 });
 
