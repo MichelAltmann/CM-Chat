@@ -3,6 +3,7 @@ const cors = require("cors");
 const http = require("http");
 const socketIO = require("socket.io");
 const PORT = 8081;
+const Message = require("./Message");
 
 const app = express();
 app.use(cors({ origin: "*" }));
@@ -22,9 +23,11 @@ io.on("connection", (socket) => {
     console.log("A client disconnected");
   });
 
-  socket.on("newMessage", (message) => {
-    console.log("New message received:", message);
-    io.emit("newMessage", "kek");
+  socket.on("newMessage", (messageJson) => {
+    const messageObj = JSON.parse(messageJson);
+    console.log("New message received:", messageObj.text);
+    const message = new Message(messageObj.text, messageObj.senderId);
+    io.emit("newMessage", message);
   });
 });
 
