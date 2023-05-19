@@ -1,9 +1,14 @@
 package com.cmchat.adapters
 
+import android.content.ContentValues.TAG
+import android.graphics.BitmapFactory
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.cmchat.Message
 import com.cmchat.cmchat.databinding.MessageItemBinding
 import com.cmchat.socket.SocketHandler
@@ -14,14 +19,26 @@ class MessagesAdapter : RecyclerView.Adapter<MessagesAdapter.ViewHolder>() {
 
     inner class ViewHolder(private val binding: MessageItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(message: Message){
-            if (message.senderId == SocketHandler.getSocket().id()){
-                binding.userMessage.visibility = View.VISIBLE
-                binding.userMessageText.text = message.text
-                binding.friendMessage.visibility = View.GONE
+            if (message.image == null){
+                if (message.senderId == SocketHandler.getSocket().id()){
+                    binding.userMessage.visibility = View.VISIBLE
+                    binding.userMessageText.text = message.text
+                    binding.friendMessage.visibility = View.GONE
+                } else {
+                    binding.friendMessage.visibility = View.VISIBLE
+                    binding.friendMessageText.text = message.text
+                    binding.userMessage.visibility = View.GONE
+                }
             } else {
-                binding.friendMessage.visibility = View.VISIBLE
-                binding.friendMessageText.text = message.text
-                binding.userMessage.visibility = View.GONE
+                if (message.senderId == SocketHandler.getSocket().id()){
+                    binding.userMessage.visibility = View.VISIBLE
+                    Glide.with(binding.userMessageImage).load(message.image).into(binding.userMessageImage)
+                    binding.friendMessage.visibility = View.GONE
+                } else {
+                    binding.friendMessage.visibility = View.VISIBLE
+                    Glide.with(binding.friendMessageImage).load(message.image).into(binding.friendMessageImage)
+                    binding.userMessage.visibility = View.GONE
+                }
             }
         }
     }

@@ -12,10 +12,10 @@
         android:layout_margin="4dp"
         android:visibility="gone"
         app:cardBackgroundColor="#005D5A"
-        app:strokeWidth="0dp"
         app:cardCornerRadius="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:strokeWidth="0dp"
         tools:visibility="visible">
 
         <TextView
@@ -26,6 +26,15 @@
             android:textColor="@color/white"
             android:textSize="16sp"
             tools:text="Texto" />
+
+        <ImageView
+            android:id="@+id/user_message_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:maxHeight="500dp"
+            android:layout_margin="1dp"
+            android:maxWidth="300dp"/>
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
@@ -34,11 +43,11 @@
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
         android:visibility="gone"
-        app:strokeWidth="0dp"
         app:cardBackgroundColor="#CCE8E6"
         app:cardCornerRadius="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:strokeWidth="0dp"
         tools:visibility="visible">
 
         <TextView
@@ -48,6 +57,15 @@
             android:padding="4dp"
             android:textSize="16sp"
             tools:text="Texto" />
+
+        <ImageView
+            android:id="@+id/friend_message_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:layout_margin="1dp"
+            android:maxHeight="500dp"
+            android:maxWidth="300dp" />
     </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

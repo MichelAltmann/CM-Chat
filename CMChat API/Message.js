@@ -1,6 +1,6 @@
 class Message {
-  constructor(text, senderId) {
-    (this.text = text), (this.senderId = senderId);
+  constructor(text, senderId, image) {
+    (this.text = text), (this.senderId = senderId), (this.image = image);
   }
 }
 

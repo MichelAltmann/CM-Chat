@@ -37,7 +37,8 @@
         app:boxCornerRadiusTopStart="12dp"
         app:boxStrokeColor="#005D5A"
         app:boxStrokeWidth="2dp"
-        app:endIconMode="none"
+        app:endIconMode="custom"
+        app:endIconDrawable="@drawable/ic_image"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/fab_send_message"
         app:layout_constraintStart_toStartOf="parent">
