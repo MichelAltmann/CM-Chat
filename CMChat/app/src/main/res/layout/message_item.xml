@@ -41,7 +41,7 @@
         <ImageView
             android:layout_width="12dp"
             android:layout_height="12dp"
-            android:id="@+id/user_message_state"
+            android:id="@+id/user_message_status"
             android:layout_gravity="bottom|right"/>
     </com.google.android.material.card.MaterialCardView>
 

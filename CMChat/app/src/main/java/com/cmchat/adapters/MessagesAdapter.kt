@@ -1,15 +1,12 @@
 package com.cmchat.adapters
 
-import android.content.ContentValues.TAG
-import android.graphics.BitmapFactory
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.cmchat.Message
+import com.cmchat.cmchat.R
 import com.cmchat.cmchat.databinding.MessageItemBinding
 import com.cmchat.socket.SocketHandler
 
@@ -40,7 +37,10 @@ class MessagesAdapter : RecyclerView.Adapter<MessagesAdapter.ViewHolder>() {
                     binding.userMessage.visibility = View.GONE
                 }
             }
+            loadStatus(message, binding)
         }
+
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -54,6 +54,15 @@ class MessagesAdapter : RecyclerView.Adapter<MessagesAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(messages[position])
+    }
+
+    private fun loadStatus(message : Message, binding: MessageItemBinding) {
+        when(message.status){
+            "sending" -> Glide.with(binding.userMessageStatus).load(R.drawable.ic_sending).into(binding.userMessageStatus)
+            "sent" -> Glide.with(binding.userMessageStatus).load(R.drawable.ic_sent).into(binding.userMessageStatus)
+        }
+
+
     }
 
     fun update(messages : ArrayList<Message>){

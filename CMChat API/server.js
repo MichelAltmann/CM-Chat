@@ -29,7 +29,8 @@ io.on("connection", (socket) => {
     const message = new Message(
       messageObj.text,
       messageObj.senderId,
-      messageObj.image
+      messageObj.image,
+      "sent"
     );
     io.emit("newMessage", message);
   });

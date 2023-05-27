@@ -50,12 +50,14 @@ class MainActivity : AppCompatActivity() {
                         selectedImageUri?.let { uriToByteArray(selectedImageUri) }
 
                     if (byteArray != null) {
-                        val messageJson = createMessage(
+                        val messageJson = createJsonMessage(
                             binding.textInput.text.toString(),
                             socket.id(),
                             byteArray,
                             status = "sending"
                         )
+                        messages.add(Message(binding.textInput.text.toString(),socket.id(), null, "sending"))
+                        messagesAdapter.update(messages)
                         socket.emit("newMessage", messageJson)
                     }
                 }
@@ -71,7 +73,9 @@ class MainActivity : AppCompatActivity() {
         binding.fabSendMessage.setOnClickListener {
             if (binding.textInput.text.toString().isNotEmpty()) {
                 val messageJson =
-                    createMessage(binding.textInput.text.toString(), socket.id(), null, status = "sending")
+                    createJsonMessage(binding.textInput.text.toString(), socket.id(), null, status = "sending")
+                messages.add(Message(binding.textInput.text.toString(),socket.id(), null, "sending"))
+                messagesAdapter.update(messages)
                 socket.emit("newMessage", messageJson)
                 binding.textInput.setText("")
             }
@@ -83,6 +87,7 @@ class MainActivity : AppCompatActivity() {
                 val gson = Gson()
                 val message = gson.fromJson(messageJson.toString(), Message::class.java)
                 runOnUiThread {
+                    messages.removeLast()
                     messages.add(message)
                     messagesAdapter.update(messages)
                     binding.messagesRecycler.scrollToPosition(messages.size - 1)
@@ -167,7 +172,7 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    private fun createMessage(text: String, socketId: String, image: ByteArray?, status : String): String {
+    private fun createJsonMessage(text: String, socketId: String?, image: ByteArray?, status : String): String {
         val message = Message(text, socketId, image, status)
         val gson = Gson()
         val messageJson = gson.toJson(message)
