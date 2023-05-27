@@ -1,7 +1,6 @@
 package com.cmchat
 
 import android.app.Activity
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -11,19 +10,12 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.exifinterface.media.ExifInterface
 import com.cmchat.adapters.MessagesAdapter
-import com.cmchat.cmchat.R
 import com.cmchat.cmchat.databinding.ActivityMainBinding
-import com.cmchat.socket.SocketHandler
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import io.socket.client.IO
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -37,6 +29,7 @@ private val messages: ArrayList<Message> = arrayListOf()
 
 private val PICK_IMAGE_REQUEST = 1
 private lateinit var imagePickerLauncher: ActivityResultLauncher<Intent>
+private lateinit var myApplication: Application
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,11 +37,9 @@ class MainActivity : AppCompatActivity() {
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        SocketHandler.setSocket()
+        myApplication = applicationContext as Application
 
-        val mSocket = SocketHandler.getSocket()
-
-        mSocket.connect()
+        val socket = myApplication.getSocket()
 
         imagePickerLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -61,10 +52,11 @@ class MainActivity : AppCompatActivity() {
                     if (byteArray != null) {
                         val messageJson = createMessage(
                             binding.textInput.text.toString(),
-                            mSocket.id(),
-                            byteArray
+                            socket.id(),
+                            byteArray,
+                            status = "sending"
                         )
-                        mSocket.emit("newMessage", messageJson)
+                        socket.emit("newMessage", messageJson)
                     }
                 }
             }
@@ -79,13 +71,13 @@ class MainActivity : AppCompatActivity() {
         binding.fabSendMessage.setOnClickListener {
             if (binding.textInput.text.toString().isNotEmpty()) {
                 val messageJson =
-                    createMessage(binding.textInput.text.toString(), mSocket.id(), null)
-                mSocket.emit("newMessage", messageJson)
+                    createMessage(binding.textInput.text.toString(), socket.id(), null, status = "sending")
+                socket.emit("newMessage", messageJson)
                 binding.textInput.setText("")
             }
         }
 
-        mSocket.on("newMessage") { args ->
+        socket.on("newMessage") { args ->
             if (args[0] != null) {
                 val messageJson = args[0] as JSONObject
                 val gson = Gson()
@@ -175,8 +167,8 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    private fun createMessage(text: String, socketId: String, image: ByteArray?): String {
-        val message = Message(text, socketId, image)
+    private fun createMessage(text: String, socketId: String, image: ByteArray?, status : String): String {
+        val message = Message(text, socketId, image, status)
         val gson = Gson()
         val messageJson = gson.toJson(message)
         return messageJson

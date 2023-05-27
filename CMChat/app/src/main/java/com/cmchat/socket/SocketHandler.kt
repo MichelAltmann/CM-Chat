@@ -11,7 +11,7 @@ object SocketHandler {
     @Synchronized
     fun setSocket(){
         try {
-            mSocket = IO.socket("http://10.0.2.2:8081")
+            mSocket = IO.socket("http://192.168.31.76:8081")
         } catch (e: URISyntaxException) {
 
         }
