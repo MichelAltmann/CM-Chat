@@ -174,7 +174,7 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun createJsonMessage(text: String, socketId: String?, image: ByteArray?, status : String): String {
-        val message = Message(socketId!!,1,text, image, status)
+        val message = Message(socketId,1,text, image, status)
         val gson = Gson()
         val messageJson = gson.toJson(message)
         return messageJson
