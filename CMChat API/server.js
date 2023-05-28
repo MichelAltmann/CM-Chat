@@ -61,6 +61,37 @@ app.post("/login", (req, res) => {
   });
 });
 
+app.get("/friends/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  const sql = `SELECT u.*
+  FROM user u
+  INNER JOIN friend f ON (u.id = f.friendId AND f.userId = ${id})
+     OR (u.id = f.userId AND f.friendId = ${id})
+  WHERE u.id != ${id} and u.deleted = 0 and u.isSuspended = 0;`;
+
+  con.query(sql, (error, data) => {
+    if (error) res.status(500).json({ message: "Invalid id." });
+
+    const users = data.reduce((acc, row) => {
+      if (!acc[row.id]) {
+        acc[row.id] = {
+          id: row.id,
+          username: row.username,
+          birthday: row.birthday,
+          profileImage: row.profileImage,
+          backgroundImage: row.backgroundImage,
+          bio: row.bio,
+          createdDate: row.createdDate,
+        };
+      }
+      return acc;
+    }, {});
+
+    const jsonResult = Object.values(users);
+    return res.json(jsonResult);
+  });
+});
+
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
