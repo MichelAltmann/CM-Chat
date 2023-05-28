@@ -1,4 +1,4 @@
-package com.cmchat.socket
+package com.cmchat.application.socket
 
 import io.socket.client.IO
 import io.socket.client.Socket

@@ -30,7 +30,6 @@ io.on("connection", (socket) => {
 
   socket.on("newMessage", (messageJson) => {
     const messageObj = JSON.parse(messageJson);
-    console.log("New message received:", messageObj.image);
     const message = new Message(
       messageObj.text,
       messageObj.senderId,

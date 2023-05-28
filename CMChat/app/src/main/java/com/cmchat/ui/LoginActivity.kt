@@ -1,10 +1,9 @@
-package com.cmchat
+package com.cmchat.ui
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
-import com.cmchat.cmchat.R
 import com.cmchat.cmchat.databinding.ActivityLoginBinding
 import com.cmchat.model.LoginRequest
 import org.koin.androidx.viewmodel.ext.android.viewModel

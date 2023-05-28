@@ -1,9 +1,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.CMChat" parent="Theme.Material3.Light">
-        <item name="android:colorPrimary">#00A09C</item>
-        <item name="android:colorAccent">#CCE8E6</item>
-        <item name="android:statusBarColor">#00A09C</item>
+    <style name="Theme.CMChat" parent="Theme.Material3.Light">
+        <item name="android:colorPrimary">@color/primaryColor</item>
+        <item name="android:colorAccent">@color/accentColor</item>
+        <item name="android:statusBarColor">@color/primaryColor</item>
+        <item name="actionBarStyle">@style/MyActionBar</item>
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
@@ -13,5 +14,19 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="Theme.CMChat" parent="Base.Theme.CMChat" />
+    <style name="MyActionBar"
+        parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse" >
+        <item name="android:background">@color/primaryColor</item>
+        <item name="android:titleTextStyle">@style/MyActionBarTitleText</item>
+        <item name="actionBarSize">50dp</item>
+
+        <!-- Support library compatibility -->
+        <item name="background">@color/primaryColor</item>
+        <item name="titleTextStyle">@style/MyActionBarTitleText</item>
+    </style>
+
+    <style name="MyActionBarTitleText"
+        parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">#ffffff</item>
+    </style>
 </resources>

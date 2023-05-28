@@ -1,6 +1,6 @@
 package com.cmchat.application
 
-import com.cmchat.LoginViewModel
+import com.cmchat.ui.LoginViewModel
 import com.cmchat.retrofit.Repository
 import com.cmchat.retrofit.RepositoryInterface
 import com.cmchat.retrofit.RetrofitInitializer

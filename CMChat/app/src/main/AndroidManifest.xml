@@ -19,9 +19,12 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31" >
         <activity
-            android:name="com.cmchat.LoginActivity"
-            android:theme="@style/Theme.CMChat.noActionBar"
-            android:exported="true">
+            android:name="com.cmchat.ui.MainActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.cmchat.ui.LoginActivity"
+            android:exported="true"
+            android:theme="@style/Theme.CMChat.noActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -29,7 +32,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.cmchat.ChatActivity"
+            android:name="com.cmchat.ui.ChatActivity"
             android:exported="false" />
     </application>
 

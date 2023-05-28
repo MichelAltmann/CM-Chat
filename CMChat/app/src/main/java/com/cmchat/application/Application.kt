@@ -1,7 +1,7 @@
 package com.cmchat.application
 
 import android.app.Application
-import com.cmchat.socket.SocketHandler
+import com.cmchat.application.socket.SocketHandler
 import io.socket.client.Socket
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger

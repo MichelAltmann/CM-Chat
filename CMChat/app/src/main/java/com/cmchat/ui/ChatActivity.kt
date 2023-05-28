@@ -1,4 +1,4 @@
-package com.cmchat
+package com.cmchat.ui
 
 import android.app.Activity
 import android.content.Context
@@ -22,18 +22,20 @@ import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 
-private var _binding: ActivityChatBinding? = null
-private val binding get() = _binding!!
-private val messagesAdapter by lazy {
-    MessagesAdapter()
-}
-private val messages: ArrayList<Message> = arrayListOf()
-
-private val PICK_IMAGE_REQUEST = 1
-private lateinit var imagePickerLauncher: ActivityResultLauncher<Intent>
-private lateinit var myApplication: Application
-
 class ChatActivity : AppCompatActivity() {
+
+    private var _binding: ActivityChatBinding? = null
+    private val binding get() = _binding!!
+    private val messagesAdapter by lazy {
+        MessagesAdapter()
+    }
+    private val messages: ArrayList<Message> = arrayListOf()
+
+    private val PICK_IMAGE_REQUEST = 1
+    private lateinit var imagePickerLauncher: ActivityResultLauncher<Intent>
+    private lateinit var myApplication: Application
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityChatBinding.inflate(layoutInflater)
