@@ -16,8 +16,22 @@ class Repository(private val apiService: ApiService) : RepositoryInterface{
             NetworkResponse.Failed(e)
         }
     }
+
+    override suspend fun getFriends(id: Int): NetworkResponse<FriendsResponse> {
+        return try {
+            val response = apiService.getFriends(id)
+            if (response.isSuccessful){
+                NetworkResponse.Success(response.body()!!)
+            } else {
+                NetworkResponse.Failed(Exception())
+            }
+        } catch (e : Exception){
+            NetworkResponse.Failed(e)
+        }
+    }
 }
 
 interface RepositoryInterface {
     suspend fun login(loginRequest: LoginRequest) : NetworkResponse<User>
+    suspend fun getFriends(id: Int) : NetworkResponse<FriendsResponse>
 }

@@ -9,7 +9,7 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
-    <style name="Theme.CMChat.noActionBar" parent="Base.Theme.CMChat">
+    <style name="Theme.CMChat.noActionBar" parent="Theme.CMChat">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>

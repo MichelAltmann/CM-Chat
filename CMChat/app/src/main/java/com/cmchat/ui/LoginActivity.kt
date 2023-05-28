@@ -30,7 +30,7 @@ class LoginActivity : AppCompatActivity() {
     private fun observeUser() {
         viewModel.user.observe(this) {
             it?.let {
-                val intent = Intent(this, ChatActivity::class.java)
+                val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
                 finish()
             }
