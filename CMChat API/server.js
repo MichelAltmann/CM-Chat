@@ -51,7 +51,14 @@ app.post("/login", (req, res) => {
       return res
         .status(401)
         .json({ success: false, message: "Invalid username or password" });
-    return res.json(data[0]);
+
+    if (data.length > 0) {
+      return res.json(data[0]);
+    } else {
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid username or password" });
+    }
   });
 });
 

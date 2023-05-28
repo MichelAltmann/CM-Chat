@@ -14,6 +14,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.exifinterface.media.ExifInterface
 import com.cmchat.adapters.MessagesAdapter
+import com.cmchat.application.Application
 import com.cmchat.cmchat.databinding.ActivityChatBinding
 import com.cmchat.model.Message
 import com.google.gson.Gson
