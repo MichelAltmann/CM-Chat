@@ -14,13 +14,14 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.exifinterface.media.ExifInterface
 import com.cmchat.adapters.MessagesAdapter
-import com.cmchat.cmchat.databinding.ActivityMainBinding
+import com.cmchat.cmchat.databinding.ActivityChatBinding
+import com.cmchat.model.Message
 import com.google.gson.Gson
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 
-private var _binding: ActivityMainBinding? = null
+private var _binding: ActivityChatBinding? = null
 private val binding get() = _binding!!
 private val messagesAdapter by lazy {
     MessagesAdapter()
@@ -31,10 +32,10 @@ private val PICK_IMAGE_REQUEST = 1
 private lateinit var imagePickerLauncher: ActivityResultLauncher<Intent>
 private lateinit var myApplication: Application
 
-class MainActivity : AppCompatActivity() {
+class ChatActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _binding = ActivityMainBinding.inflate(layoutInflater)
+        _binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         myApplication = applicationContext as Application
@@ -56,7 +57,7 @@ class MainActivity : AppCompatActivity() {
                             byteArray,
                             status = "sending"
                         )
-                        messages.add(Message(binding.textInput.text.toString(),socket.id(), null, "sending"))
+                        messages.add(Message(socket.id(), 1, binding.textInput.text.toString(), null, "sending"))
                         messagesAdapter.update(messages)
                         socket.emit("newMessage", messageJson)
                     }
@@ -74,7 +75,7 @@ class MainActivity : AppCompatActivity() {
             if (binding.textInput.text.toString().isNotEmpty()) {
                 val messageJson =
                     createJsonMessage(binding.textInput.text.toString(), socket.id(), null, status = "sending")
-                messages.add(Message(binding.textInput.text.toString(),socket.id(), null, "sending"))
+                messages.add(Message(socket.id(), 1, binding.textInput.text.toString(), null, "sending"))
                 messagesAdapter.update(messages)
                 socket.emit("newMessage", messageJson)
                 binding.textInput.setText("")
@@ -173,7 +174,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun createJsonMessage(text: String, socketId: String?, image: ByteArray?, status : String): String {
-        val message = Message(text, socketId, image, status)
+        val message = Message(socketId!!,1,text, image, status)
         val gson = Gson()
         val messageJson = gson.toJson(message)
         return messageJson

@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.cmchat.Message
+import com.cmchat.model.Message
 import com.cmchat.cmchat.R
 import com.cmchat.cmchat.databinding.MessageItemBinding
 import com.cmchat.socket.SocketHandler
@@ -39,8 +39,6 @@ class MessagesAdapter : RecyclerView.Adapter<MessagesAdapter.ViewHolder>() {
             }
             loadStatus(message, binding)
         }
-
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
