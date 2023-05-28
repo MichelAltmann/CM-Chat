@@ -4,8 +4,13 @@ const http = require("http");
 const socketIO = require("socket.io");
 const PORT = 8081;
 const Message = require("./Message");
+const bodyParser = require("body-parser");
+
+const con = require("./connection");
 
 const app = express();
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use(cors({ origin: "*" }));
 const server = http.createServer(app);
 const io = socketIO(server, {
@@ -33,6 +38,20 @@ io.on("connection", (socket) => {
       "sent"
     );
     io.emit("newMessage", message);
+  });
+});
+
+app.post("/login", (req, res) => {
+  const { username, password } = req.body;
+
+  const sql = "SELECT * FROM user WHERE username = ? and password = ?";
+
+  con.query(sql, [username, password], (error, data) => {
+    if (error)
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid username or password" });
+    return res.json(data[0]);
   });
 });
 
