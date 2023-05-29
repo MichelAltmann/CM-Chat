@@ -9,12 +9,16 @@ import com.cmchat.model.Friend
 class FriendsAdapter : RecyclerView.Adapter<FriendsAdapter.ViewHolder>() {
 
     private val friends : ArrayList<Friend> = arrayListOf()
+    lateinit var friendClick : (Int) -> Unit
 
     inner class ViewHolder(private val binding : UserItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(friend : Friend) {
             binding.userName.text = friend.username
             binding.userLastMessage.text = friend.id.toString()
             binding.userLastMessageTime.text = "00:00"
+            itemView.setOnClickListener {
+                friendClick.invoke(friend.id)
+            }
         }
     }
 

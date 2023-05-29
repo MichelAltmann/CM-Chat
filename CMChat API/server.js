@@ -31,12 +31,14 @@ io.on("connection", (socket) => {
   socket.on("newMessage", (messageJson) => {
     const messageObj = JSON.parse(messageJson);
     const message = new Message(
+      messageObj.receiverId,
       messageObj.text,
       messageObj.senderId,
       messageObj.image,
       "sent"
     );
-    io.emit("newMessage", message);
+    io.emit("newMessage" + message.receiverId, message);
+    io.emit("newMessage" + message.senderId, message);
   });
 });
 

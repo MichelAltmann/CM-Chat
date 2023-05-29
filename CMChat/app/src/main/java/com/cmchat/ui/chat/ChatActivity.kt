@@ -1,6 +1,7 @@
 package com.cmchat.ui.chat
 
 import android.app.Activity
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -10,12 +11,14 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.exifinterface.media.ExifInterface
 import com.cmchat.application.Application
 import com.cmchat.cmchat.databinding.ActivityChatBinding
 import com.cmchat.model.Message
+import com.cmchat.model.User
 import com.google.gson.Gson
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
@@ -33,6 +36,8 @@ class ChatActivity : AppCompatActivity() {
     private val PICK_IMAGE_REQUEST = 1
     private lateinit var imagePickerLauncher: ActivityResultLauncher<Intent>
     private lateinit var myApplication: Application
+    private lateinit var user: User
+    private var id = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,6 +46,12 @@ class ChatActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         myApplication = applicationContext as Application
+
+        val user = myApplication.getUser()
+
+        id = intent.getIntExtra("id", 0)
+
+        Log.i(TAG, "onCreate: " + id + " " + user.id)
 
         val socket = myApplication.getSocket()
 
@@ -54,13 +65,22 @@ class ChatActivity : AppCompatActivity() {
 
                     if (byteArray != null) {
                         val messageJson = createJsonMessage(
+                            user,
                             binding.textInput.text.toString(),
-                            socket.id(),
+                            id,
                             byteArray,
                             status = "sending"
                         )
-                        messages.add(Message(socket.id(), 1, binding.textInput.text.toString(), null, "sending"))
-                        messagesAdapter.update(messages)
+                        messages.add(
+                            Message(
+                                user.id,
+                                id,
+                                binding.textInput.text.toString(),
+                                null,
+                                "sending"
+                            )
+                        )
+                        messagesAdapter.update(messages, user)
                         socket.emit("newMessage", messageJson)
                     }
                 }
@@ -75,24 +95,39 @@ class ChatActivity : AppCompatActivity() {
 
         binding.fabSendMessage.setOnClickListener {
             if (binding.textInput.text.toString().isNotEmpty()) {
-                val messageJson =
-                    createJsonMessage(binding.textInput.text.toString(), socket.id(), null, status = "sending")
-                messages.add(Message(socket.id(), 1, binding.textInput.text.toString(), null, "sending"))
-                messagesAdapter.update(messages)
+                val messageJson = createJsonMessage(
+                    user,
+                    binding.textInput.text.toString(),
+                    id,
+                    null,
+                    status = "sending"
+                )
+                messages.add(
+                    Message(
+                        user.id,
+                        id,
+                        binding.textInput.text.toString(),
+                        null,
+                        "sending"
+                    )
+                )
+                messagesAdapter.update(messages, user)
                 socket.emit("newMessage", messageJson)
                 binding.textInput.setText("")
             }
         }
 
-        socket.on("newMessage") { args ->
+        socket.on("newMessage" + user.id) { args ->
             if (args[0] != null) {
                 val messageJson = args[0] as JSONObject
                 val gson = Gson()
                 val message = gson.fromJson(messageJson.toString(), Message::class.java)
                 runOnUiThread {
-                    messages.removeLast()
+                    if (user.id == message.senderId){
+                        messages.removeLast()
+                    }
                     messages.add(message)
-                    messagesAdapter.update(messages)
+                    messagesAdapter.update(messages, user)
                     binding.messagesRecycler.scrollToPosition(messages.size - 1)
                 }
             }
@@ -175,8 +210,14 @@ class ChatActivity : AppCompatActivity() {
         )
     }
 
-    private fun createJsonMessage(text: String, socketId: String?, image: ByteArray?, status : String): String {
-        val message = Message(socketId,1,text, image, status)
+    private fun createJsonMessage(
+        user: User,
+        text: String,
+        id: Int,
+        image: ByteArray?,
+        status: String
+    ): String {
+        val message = Message(user.id, id, text, image, status)
         val gson = Gson()
         val messageJson = gson.toJson(message)
         return messageJson

@@ -13,7 +13,6 @@ import java.lang.Exception
 
 class MainViewModel(private val repository: RepositoryInterface, private val application: Application) : ViewModel() {
 
-    private val user = application.getUser()
 
     private val _friendsResponse = MutableLiveData<FriendsResponse>()
     val friendsResponse : LiveData<FriendsResponse> = _friendsResponse
@@ -21,6 +20,7 @@ class MainViewModel(private val repository: RepositoryInterface, private val app
     val error : LiveData<Exception> = _error
 
     fun getFriends() = viewModelScope.launch{
+        val user = application.getUser()
         when (val response = repository.getFriends(user.id)) {
             is NetworkResponse.Success -> {
                 _friendsResponse.value = response.data!!

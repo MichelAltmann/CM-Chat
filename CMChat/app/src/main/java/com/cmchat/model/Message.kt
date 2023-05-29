@@ -1,7 +1,7 @@
 package com.cmchat.model
 
 class Message(
-    val senderId : String?,
+    val senderId : Int,
     val receiverId : Int,
     val text : String,
     val image : ByteArray?,

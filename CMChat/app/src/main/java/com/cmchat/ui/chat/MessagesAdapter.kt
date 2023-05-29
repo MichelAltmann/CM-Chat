@@ -9,15 +9,17 @@ import com.cmchat.application.socket.SocketHandler
 import com.cmchat.model.Message
 import com.cmchat.cmchat.R
 import com.cmchat.cmchat.databinding.MessageItemBinding
+import com.cmchat.model.User
 
 class MessagesAdapter : RecyclerView.Adapter<MessagesAdapter.ViewHolder>() {
 
     private val messages : ArrayList<Message> = arrayListOf()
+    private lateinit var user : User
 
     inner class ViewHolder(private val binding: MessageItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(message: Message){
             if (message.image == null){
-                if (message.senderId == SocketHandler.getSocket().id()){
+                if (message.senderId == user.id){
                     binding.userMessage.visibility = View.VISIBLE
                     binding.userMessageText.text = message.text
                     binding.friendMessage.visibility = View.GONE
@@ -27,7 +29,7 @@ class MessagesAdapter : RecyclerView.Adapter<MessagesAdapter.ViewHolder>() {
                     binding.userMessage.visibility = View.GONE
                 }
             } else {
-                if (message.senderId == SocketHandler.getSocket().id()){
+                if (message.senderId == user.id){
                     binding.userMessage.visibility = View.VISIBLE
                     Glide.with(binding.userMessageImage).load(message.image).into(binding.userMessageImage)
                     binding.friendMessage.visibility = View.GONE
@@ -63,9 +65,10 @@ class MessagesAdapter : RecyclerView.Adapter<MessagesAdapter.ViewHolder>() {
 
     }
 
-    fun update(messages : ArrayList<Message>){
+    fun update(messages : ArrayList<Message>, user: User){
         this.messages.clear()
         this.messages.addAll(messages)
+        this.user = user
         notifyItemChanged(messages.size - 1)
     }
 
