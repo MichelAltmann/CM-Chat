@@ -1,8 +1,9 @@
-package com.cmchat.ui
+package com.cmchat.ui.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.cmchat.cmchat.databinding.ActivityMainBinding
+import com.cmchat.ui.main.adapters.FriendsAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {

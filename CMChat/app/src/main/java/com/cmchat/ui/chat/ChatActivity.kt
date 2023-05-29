@@ -1,4 +1,4 @@
-package com.cmchat.ui
+package com.cmchat.ui.chat
 
 import android.app.Activity
 import android.content.Context
@@ -13,7 +13,6 @@ import android.provider.MediaStore
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.exifinterface.media.ExifInterface
-import com.cmchat.adapters.MessagesAdapter
 import com.cmchat.application.Application
 import com.cmchat.cmchat.databinding.ActivityChatBinding
 import com.cmchat.model.Message

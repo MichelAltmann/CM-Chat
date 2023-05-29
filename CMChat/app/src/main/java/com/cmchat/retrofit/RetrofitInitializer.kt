@@ -9,7 +9,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-private const val BASE_URL = "http://10.0.2.2:8081/"
+private const val BASE_URL = "http://192.168.31.76:8081/"
 
 class RetrofitInitializer {
 

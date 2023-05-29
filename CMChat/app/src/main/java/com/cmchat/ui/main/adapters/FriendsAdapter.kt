@@ -1,4 +1,4 @@
-package com.cmchat.ui
+package com.cmchat.ui.main.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

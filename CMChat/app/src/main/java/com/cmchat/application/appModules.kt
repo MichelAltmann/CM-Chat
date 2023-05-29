@@ -1,10 +1,10 @@
 package com.cmchat.application
 
-import com.cmchat.ui.LoginViewModel
+import com.cmchat.ui.login.LoginViewModel
 import com.cmchat.retrofit.Repository
 import com.cmchat.retrofit.RepositoryInterface
 import com.cmchat.retrofit.RetrofitInitializer
-import com.cmchat.ui.MainViewModel
+import com.cmchat.ui.main.MainViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.module.Module
