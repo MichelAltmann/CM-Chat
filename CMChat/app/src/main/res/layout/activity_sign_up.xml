@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.cmchat.ui.login.SignUpActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="32dp"
+        android:text="CMCHAT"
+        android:textColor="@color/black"
+        android:textSize="50sp" />
+
+    <EditText
+        android:id="@+id/sign_up_username_input"
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/enter_text_background"
+        android:hint="Username"
+        android:inputType="textCapWords"
+        android:paddingStart="12dp" />
+
+    <EditText
+        android:id="@+id/sign_up_email_input"
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/enter_text_background"
+        android:hint="Email"
+        android:inputType="textCapWords"
+        android:paddingStart="12dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/sign_up_birthdate_input"
+            android:layout_width="0dp"
+            android:layout_height="46dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="12dp"
+            android:layout_weight="1"
+            android:background="@drawable/enter_text_background"
+            android:hint="Birthdate"
+            android:inputType="textCapWords"
+            android:paddingStart="12dp" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/sign_up_birthdate_calendar_fab"
+            android:outlineAmbientShadowColor="@android:color/transparent"
+            android:outlineSpotShadowColor="@android:color/transparent"
+            android:src="@drawable/ic_calendar"
+            app:backgroundTint="#CCE8E6"
+            app:fabCustomSize="46dp"
+            android:importantForAccessibility="no" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/sign_up_password_input"
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/enter_text_background"
+        android:hint="Password"
+        android:inputType="textCapWords"
+        android:paddingStart="12dp" />
+
+    <EditText
+        android:id="@+id/sign_up_repeat_password_input"
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/enter_text_background"
+        android:hint="Repeat password"
+        android:inputType="textCapWords"
+        android:paddingStart="12dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/sign_up_btn_cancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_weight="1"
+            android:text="Cancel"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:backgroundTint="#CCE8E6"
+            app:cornerRadius="12dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/sign_up_btn_signup"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_weight="1"
+            android:text="Sign up"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:backgroundTint="#00A09C"
+            app:cornerRadius="12dp" />
+
+    </LinearLayout>
+
+</LinearLayout>

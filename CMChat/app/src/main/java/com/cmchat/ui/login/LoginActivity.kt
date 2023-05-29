@@ -24,8 +24,18 @@ class LoginActivity : AppCompatActivity() {
         forgotPasswordClick()
 
         onLoginClick()
+
+        onRegisterClick()
+
         observeUser()
 
+    }
+
+    private fun onRegisterClick() {
+        binding.registerBtn.setOnClickListener {
+            val intent = Intent(this, SignUpActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun observeUser() {
