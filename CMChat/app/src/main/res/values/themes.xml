@@ -14,6 +14,16 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="datepicker" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/accentColor</item>                   <!--header background-->
+        <item name="android:windowBackground">@color/white</item>     <!--calendar background-->
+        <item name="android:colorControlActivated">@color/primaryColor</item> <!--selected day-->
+        <item name="android:textColorPrimary">@color/black</item> <!--days of the month-->
+        <item name="android:textColorSecondary">@color/black</item> <!--days of the week-->
+        <item name="android:textColor">@color/primaryColor</item>
+        <item name="colorOnPrimary">@color/primaryColor</item>
+    </style>
+
     <style name="MyActionBar"
         parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse" >
         <item name="android:background">@color/primaryColor</item>
