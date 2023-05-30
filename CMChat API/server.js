@@ -7,6 +7,7 @@ const Message = require("./Message");
 const bodyParser = require("body-parser");
 
 const con = require("./connection");
+const { parse } = require("path");
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -65,10 +66,6 @@ app.post("/login", (req, res) => {
 
 app.put("/signup", (req, res) => {
   const user = req.body;
-  console.log(user);
-  const sql =
-    "INSERT INTO user(id, email, password, username, birthday, profileImage, backgroundImage, bio, createdDate, deleted, isSuspended)" +
-    "VALUES(?,?,?,?,?,?,?,?,?,?,?)";
   const checkSql = "SELECT * FROM user WHERE email = ?";
   con.query(checkSql, user.email, (error, data) => {
     if (error)
@@ -76,29 +73,65 @@ app.put("/signup", (req, res) => {
     if (data.length > 0) {
       return res.status(400).json({ message: "Email already in use" });
     } else {
-      con.query(
-        sql,
-        [
-          user.id,
-          user.email,
-          user.password,
-          user.username,
-          user.birthday,
-          user.profileImage,
-          user.backgroundImage,
-          user.bio,
-          user.createdDate,
-          user.deleted,
-          user.isSuspended,
-        ],
-        (error, data) => {
-          if (error) return res.status(500).json({ message: "Invalid user." });
-          res.status(200).json({ message: "Signup Successful" });
+      const usernameSql = "SELECT * FROM user WHERE username = ?";
+      con.query(usernameSql, user.username, (error, data) => {
+        if (error)
+          return res.status(500).json({ message: "Internal server error." });
+        if (data.length > 0) {
+          return res.status(400).json({ message: "Username already in use" });
+        } else {
+          const sql =
+            "INSERT INTO user(id, email, password, username, birthday, profileImage, backgroundImage, bio, createdDate, deleted, isSuspended)" +
+            "VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+          con.query(
+            sql,
+            [
+              user.id,
+              user.email,
+              user.password,
+              user.username,
+              parseDateToSQL(user.birthday),
+              user.profileImage,
+              user.backgroundImage,
+              user.bio,
+              parseDateToSQL(user.createdDate),
+              user.deleted,
+              user.isSuspended,
+            ],
+            (error, data) => {
+              if (error) return res.send(error);
+              res.status(200).json({ message: "Signup Successful" });
+            }
+          );
         }
-      );
+      });
     }
   });
 });
+
+function parseDateToSQL(dateString) {
+  const months = {
+    Jan: "01",
+    Feb: "02",
+    Mar: "03",
+    Apr: "04",
+    May: "05",
+    Jun: "06",
+    Jul: "07",
+    Aug: "08",
+    Sep: "09",
+    Oct: "10",
+    Nov: "11",
+    Dec: "12",
+  };
+
+  const dateObj = new Date(dateString);
+  const month = months[dateObj.toLocaleString("en", { month: "short" })];
+  const day = String(dateObj.getDate()).padStart(2, "0");
+  const year = dateObj.getFullYear();
+
+  return `${year}-${month}-${day}`;
+}
 
 app.get("/friends/:id", (req, res) => {
   const id = parseInt(req.params.id);
