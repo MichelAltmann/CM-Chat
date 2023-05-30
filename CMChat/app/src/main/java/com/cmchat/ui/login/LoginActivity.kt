@@ -3,12 +3,15 @@ package com.cmchat.ui.login
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.EditText
 import android.widget.Toast
 import com.cmchat.cmchat.databinding.ActivityLoginBinding
 import com.cmchat.model.LoginRequest
 import com.cmchat.ui.login.signup.SignUpActivity
 import com.cmchat.ui.main.MainActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.math.BigInteger
+import java.security.MessageDigest
 
 
 class LoginActivity : AppCompatActivity() {
@@ -37,6 +40,15 @@ class LoginActivity : AppCompatActivity() {
             val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)
         }
+    }
+
+    private fun passwordHasher(passwordEt: EditText): String {
+        var crudePassword = passwordEt.text.toString()
+        val md = MessageDigest.getInstance("SHA-256")
+        val bigPassword = BigInteger(1, md.digest(crudePassword.toByteArray()))
+        val password = bigPassword.toString()
+        crudePassword = ""
+        return password
     }
 
     private fun observeUser() {
@@ -73,7 +85,8 @@ class LoginActivity : AppCompatActivity() {
             }
 
             val username = userInput.text.toString()
-            val password = passInput.text.toString()
+            val password = passwordHasher(passInput)
+
 
             viewModel.authenticateUser(LoginRequest(username, password))
         }

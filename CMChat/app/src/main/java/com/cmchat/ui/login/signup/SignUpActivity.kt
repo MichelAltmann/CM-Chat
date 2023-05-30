@@ -160,10 +160,11 @@ class SignUpActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
     }
 
     private fun passwordHasher(passwordEt: EditText): String {
-        val crudePassword = passwordEt.text.toString()
+        var crudePassword = passwordEt.text.toString()
         val md = MessageDigest.getInstance("SHA-256")
         val bigPassword = BigInteger(1, md.digest(crudePassword.toByteArray()))
         val password = bigPassword.toString()
+        crudePassword = ""
         return password
     }
 
