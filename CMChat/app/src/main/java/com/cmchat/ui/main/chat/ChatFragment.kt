@@ -9,25 +9,20 @@ import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.exifinterface.media.ExifInterface
-import androidx.navigation.fragment.findNavController
+import androidx.fragment.app.Fragment
 import com.cmchat.application.Application
 import com.cmchat.cmchat.databinding.FragmentChatBinding
 import com.cmchat.model.Message
 import com.cmchat.model.User
 import com.google.gson.Gson
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Runnable
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -75,33 +70,31 @@ class ChatFragment : Fragment() {
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == Activity.RESULT_OK) {
 
-                        val data: Intent? = result.data
-                        val selectedImageUri: Uri? = data?.data
-                        val byteArray: ByteArray? =
-                            selectedImageUri?.let { uriToByteArray(selectedImageUri) }
+                    val data: Intent? = result.data
+                    val selectedImageUri: Uri? = data?.data
+                    val byteArray: ByteArray? =
+                        selectedImageUri?.let { uriToByteArray(selectedImageUri) }
 
-                        if (byteArray != null) {
-                            val messageJson = createJsonMessage(
-                                user,
-                                binding.textInput.text.toString(),
+                    if (byteArray != null) {
+                        val messageJson = createJsonMessage(
+                            user,
+                            binding.textInput.text.toString(),
+                            id,
+                            byteArray,
+                            status = "sending"
+                        )
+                        messages.add(
+                            Message(
+                                user.id,
                                 id,
-                                byteArray,
-                                status = "sending"
+                                binding.textInput.text.toString(),
+                                null,
+                                "sending"
                             )
-                            messages.add(
-                                Message(
-                                    user.id,
-                                    id,
-                                    binding.textInput.text.toString(),
-                                    null,
-                                    "sending"
-                                )
-                            )
-                            requireActivity().runOnUiThread {
-                                messagesAdapter.update(messages, user)
-                                socket.emit("newMessage", messageJson)
-                            }
-                        }
+                        )
+                        messagesAdapter.update(messages, user)
+                        socket.emit("newMessage", messageJson)
+                    }
                 }
             }
 
@@ -113,30 +106,29 @@ class ChatFragment : Fragment() {
         }
 
         binding.fabSendMessage.setOnClickListener {
-                if (binding.textInput.text.toString().isNotEmpty()) {
+            if (binding.textInput.text.toString().isNotEmpty()) {
 
-                    val messageJson = createJsonMessage(
-                        user,
-                        binding.textInput.text.toString(),
+                val messageJson = createJsonMessage(
+                    user,
+                    binding.textInput.text.toString(),
+                    id,
+                    null,
+                    status = "sending"
+                )
+                messages.add(
+                    Message(
+                        user.id,
                         id,
+                        binding.textInput.text.toString(),
                         null,
-                        status = "sending"
+                        "sending"
                     )
-                    messages.add(
-                        Message(
-                            user.id,
-                            id,
-                            binding.textInput.text.toString(),
-                            null,
-                            "sending"
-                        ))
-                    requireActivity().runOnUiThread {
-                        messagesAdapter.update(messages, user)
-                        socket.emit("newMessage", messageJson)
-                        binding.textInput.setText("")
-                    }
+                )
+                messagesAdapter.update(messages, user)
+                socket.emit("newMessage", messageJson)
+                binding.textInput.setText("")
 
-                }
+            }
         }
 
         socket.on("newMessage" + user.id) { args ->
@@ -256,6 +248,5 @@ class ChatFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
     }
 }
