@@ -4,4 +4,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="primaryColor">#00A09C</color>
     <color name="accentColor">#CCE8E6</color>
+    <color name="onAccentColor">#006A67</color>
 </resources>

@@ -88,7 +88,7 @@ class ChatFragment : Fragment() {
                                 user.id,
                                 id,
                                 binding.textInput.text.toString(),
-                                null,
+                                byteArray,
                                 "sending"
                             )
                         )
