@@ -63,6 +63,43 @@ app.post("/login", (req, res) => {
   });
 });
 
+app.put("/signup", (req, res) => {
+  const user = req.body;
+  console.log(user);
+  const sql =
+    "INSERT INTO user(id, email, password, username, birthday, profileImage, backgroundImage, bio, createdDate, deleted, isSuspended)" +
+    "VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+  const checkSql = "SELECT * FROM user WHERE email = ?";
+  con.query(checkSql, user.email, (error, data) => {
+    if (error)
+      return res.status(500).json({ message: "Internal server error." });
+    if (data.length > 0) {
+      return res.status(400).json({ message: "Email already in use" });
+    } else {
+      con.query(
+        sql,
+        [
+          user.id,
+          user.email,
+          user.password,
+          user.username,
+          user.birthday,
+          user.profileImage,
+          user.backgroundImage,
+          user.bio,
+          user.createdDate,
+          user.deleted,
+          user.isSuspended,
+        ],
+        (error, data) => {
+          if (error) return res.status(500).json({ message: "Invalid user." });
+          res.status(200).json({ message: "Signup Successful" });
+        }
+      );
+    }
+  });
+});
+
 app.get("/friends/:id", (req, res) => {
   const id = parseInt(req.params.id);
   const sql = `SELECT u.*
@@ -72,7 +109,7 @@ app.get("/friends/:id", (req, res) => {
   WHERE u.id != ${id} and u.deleted = 0 and u.isSuspended = 0;`;
 
   con.query(sql, (error, data) => {
-    if (error) res.status(500).json({ message: "Invalid id." });
+    if (error) return res.status(500).json({ message: "Invalid id." });
 
     const users = data.reduce((acc, row) => {
       if (!acc[row.id]) {
