@@ -5,9 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.cmchat.cmchat.R
 import com.cmchat.cmchat.databinding.FragmentHomeBinding
-import com.cmchat.ui.main.chat.ChatActivity
 import com.cmchat.ui.main.home.adapters.FriendsAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -43,14 +45,14 @@ class HomeFragment : Fragment() {
 
     private fun itemClickListener() {
         adapter.friendClick = {
-            val intent = Intent(requireContext(), ChatActivity::class.java)
-            intent.putExtra("id", it)
-            startActivity(intent)
+            val bundle = bundleOf("id" to it)
+            findNavController().navigate(
+                R.id.action_HomeFragment_to_ChatFragment, bundle)
         }
     }
 
     private fun friendsObserver() {
-        viewModel.friendsResponse.observe(this) {
+        viewModel.friendsResponse.observe(viewLifecycleOwner) {
             it?.let {
                 adapter.update(it)
             }
