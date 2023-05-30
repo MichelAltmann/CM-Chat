@@ -1,4 +1,4 @@
-package com.cmchat.ui.chat
+package com.cmchat.ui.main.chat
 
 import android.app.Activity
 import android.content.ContentValues.TAG

@@ -1,10 +1,10 @@
 package com.cmchat.ui.login
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.cmchat.cmchat.databinding.ActivityLoginBinding
 import com.cmchat.model.LoginRequest
 import com.cmchat.ui.login.signup.SignUpActivity

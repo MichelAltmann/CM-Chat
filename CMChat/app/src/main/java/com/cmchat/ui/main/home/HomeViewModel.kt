@@ -1,4 +1,4 @@
-package com.cmchat.ui.main
+package com.cmchat.ui.main.home
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,7 +11,7 @@ import com.cmchat.retrofit.RepositoryInterface
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
-class MainViewModel(private val repository: RepositoryInterface, private val application: Application) : ViewModel() {
+class HomeViewModel(private val repository: RepositoryInterface, private val application: Application) : ViewModel() {
 
 
     private val _friendsResponse = MutableLiveData<FriendsResponse>()

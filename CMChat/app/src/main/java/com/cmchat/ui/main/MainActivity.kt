@@ -1,49 +1,37 @@
 package com.cmchat.ui.main
 
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
+import com.cmchat.cmchat.R
 import com.cmchat.cmchat.databinding.ActivityMainBinding
-import com.cmchat.ui.chat.ChatActivity
-import com.cmchat.ui.main.adapters.FriendsAdapter
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
 
-    private var _binding : ActivityMainBinding? = null
-    private val binding get() = _binding!!
-    private val adapter by lazy {
-        FriendsAdapter()
-    }
+    private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var binding: ActivityMainBinding
 
-    private val viewModel by viewModel<MainViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         super.onCreate(savedInstanceState)
-        _binding = ActivityMainBinding.inflate(layoutInflater)
+
+        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.userList.adapter = adapter
+        setSupportActionBar(binding.toolbar)
 
-        friendsObserver()
+        val navController = findNavController(R.id.nav_host_fragment_content_main)
+        appBarConfiguration = AppBarConfiguration(navController.graph)
 
-        viewModel.getFriends()
-
-        itemClickListener()
     }
 
-    private fun itemClickListener() {
-        adapter.friendClick = {
-            val intent = Intent(this, ChatActivity::class.java)
-            intent.putExtra("id", it)
-            startActivity(intent)
-        }
-    }
-
-    private fun friendsObserver() {
-        viewModel.friendsResponse.observe(this) {
-            it?.let {
-                adapter.update(it)
-            }
-        }
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.nav_host_fragment_content_main)
+        return navController.navigateUp(appBarConfiguration)
+                || super.onSupportNavigateUp()
     }
 }
