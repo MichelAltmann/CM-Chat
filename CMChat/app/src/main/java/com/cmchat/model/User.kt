@@ -4,8 +4,9 @@ import java.util.Date
 
 class User(
     val id : Int,
-    val email : String,
+    val email : String?,
     val username : String,
+    val password : String?,
     val birthday : Date?,
     val profileImage : ByteArray?,
     val backgroundImage : ByteArray?,

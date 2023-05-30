@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.cmchat.ui.login.SignUpActivity">
+    tools:context="com.cmchat.ui.login.signup.SignUpActivity">
 
     <TextView
         android:layout_width="wrap_content"

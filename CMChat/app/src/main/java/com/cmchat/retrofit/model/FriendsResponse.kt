@@ -1,4 +1,4 @@
-package com.cmchat.retrofit
+package com.cmchat.retrofit.model
 
 import com.cmchat.model.Friend
 

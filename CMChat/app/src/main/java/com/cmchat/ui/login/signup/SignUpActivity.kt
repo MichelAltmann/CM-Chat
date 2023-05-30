@@ -1,16 +1,23 @@
-package com.cmchat.ui.login
+package com.cmchat.ui.login.signup
 
 import android.app.DatePickerDialog
+import android.content.ContentValues.TAG
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.widget.DatePicker
-import androidx.core.widget.doOnTextChanged
+import android.widget.Toast
 import com.cmchat.DatePickerFragment
 import com.cmchat.cmchat.databinding.ActivitySignUpBinding
+import com.cmchat.model.User
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.math.BigInteger
+import java.security.MessageDigest
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.GregorianCalendar
 import java.util.Locale
 
@@ -20,6 +27,11 @@ class SignUpActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
     private var _binding : ActivitySignUpBinding? = null
     private val binding get() = _binding!!
     private var calendar = Calendar.getInstance()
+
+    private val format = "dd/MM/yyyy"
+    private val dateFormat = SimpleDateFormat(format, Locale.getDefault())
+
+    private val viewModel by viewModel<SignupViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivitySignUpBinding.inflate(layoutInflater)
@@ -32,6 +44,27 @@ class SignUpActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
         calendarFabClick()
 
         onBirthdateText()
+
+        signUpObserver()
+    }
+
+    private fun signUpObserver() {
+        viewModel.message.observe(this) {
+            Toast.makeText(this, "" + it.message, Toast.LENGTH_SHORT).show()
+            finish()
+        }
+        viewModel.error.observe(this){
+            when (it.message){
+                "Email already in use" -> {
+                    binding.signUpEmailInput.error = "Email already in use"
+                    binding.signUpEmailInput.requestFocus()
+                }
+                "Username already in use" -> {
+                    binding.signUpUsernameInput.error = "Username already in use"
+                    binding.signUpUsernameInput.requestFocus()
+                }
+            }
+        }
     }
 
     private fun onBirthdateText() {
@@ -70,8 +103,6 @@ class SignUpActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
     }
 
     private fun updateBirthdate() {
-        val format = "dd/MM/yyyy"
-        val dateFormat = SimpleDateFormat(format, Locale.CANADA)
         binding.signUpBirthdateInput.setText(dateFormat.format(calendar.time))
     }
 
@@ -126,8 +157,23 @@ class SignUpActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
                 return@setOnClickListener
             }
 
+            val username = usernameEt.text.toString()
+            val email = emailEt.text.toString()
+            val date = dateFormat.parse(birthdateEt.text.toString())
+
+            val currentDay = Calendar.getInstance()
+            val createDate = Date(currentDay.timeInMillis)
+            // Hashing the password
+            val crudePassword = passwordEt.text.toString()
+            val md = MessageDigest.getInstance("SHA-256")
+            val bigPassword = BigInteger(1, md.digest(crudePassword.toByteArray()))
+            val password = bigPassword.toString()
 
 
+            val user = User(0, email, username,password, date, null, null, null, createDate, 0, 0)
+
+            Log.i(TAG, "onSignUpClick: " + user.birthday.toString())
+            viewModel.signup(user)
         }
     }
 

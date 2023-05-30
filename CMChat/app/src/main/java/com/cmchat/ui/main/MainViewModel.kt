@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cmchat.application.Application
-import com.cmchat.retrofit.FriendsResponse
+import com.cmchat.retrofit.model.FriendsResponse
 import com.cmchat.retrofit.NetworkResponse
 import com.cmchat.retrofit.RepositoryInterface
 import kotlinx.coroutines.launch
