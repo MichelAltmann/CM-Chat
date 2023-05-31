@@ -166,18 +166,59 @@ app.post("/edit", (req, res) => {
 
 app.put("/signup", validation.signup);
 
-app.get("/friends", (req, res) => {
-  const id = parseInt(req.query.id);
-  const status = parseInt(req.query.status);
-  const sql = `SELECT u.*
+app.post("/friend/request", (req, res) => {
+  const senderId = req.query.id;
+  const username = req.query.username;
+  const getIdSql = "SELECT id FROM user WHERE username = ?;";
+  con.query(getIdSql, username, (error, data) => {
+    if (error) return res.status(500).json({ message: error });
+    if (data.length === 0)
+      return res
+        .status(400)
+        .json({ message: "No user found with that username." });
+    const id = data[0].id;
+
+    getFriends(senderId, null, id, (error, result) => {
+      if (error) return res.status(400).json({ message: error });
+      if (result.length > 0) {
+        console.log(result);
+        if (result[0].status === 0) {
+          return res
+            .status(400)
+            .json({ message: "User already has a pending invite." });
+        } else if (result[0].status === 1) {
+          return res
+            .status(400)
+            .json({ message: "You are friends with the user already." });
+        }
+      }
+      const sql =
+        "INSERT INTO friend(friendId, status, userId) VALUES (?,0,?);";
+      con.query(sql, [id, senderId], (error, data) => {
+        if (error) return res.status(500).json({ message: error });
+        return res.json({ message: "Friend request sent." });
+      });
+    });
+  });
+});
+
+function getFriends(id, status, friendId, callback) {
+  var sql = `SELECT u.*, f.status
   FROM user u
   INNER JOIN friend f ON (u.id = f.friendId AND f.userId = ${id})
      OR (u.id = f.userId AND f.friendId = ${id})
-  WHERE u.id != ${id} and u.deleted = 0 and u.isSuspended = 0 and f.status = ${status};`;
+  WHERE u.id != ${id} and u.deleted = 0 and u.isSuspended = 0`;
+
+  if (friendId != null) {
+    sql = sql.concat(` and f.friendId = ${friendId}`);
+  }
+
+  if (status != null) {
+    sql = sql.concat(` and f.status = ${status};`);
+  }
 
   con.query(sql, (error, data) => {
-    if (error) return res.status(500).json({ message: "Invalid id." });
-
+    if (error) return callback("Invalid query.", null);
     const users = data.reduce((acc, row) => {
       if (!acc[row.id]) {
         acc[row.id] = {
@@ -189,13 +230,28 @@ app.get("/friends", (req, res) => {
           backgroundImage: row.backgroundImage,
           bio: row.bio,
           createdDate: row.createdDate,
+          status: row.status,
         };
       }
       return acc;
     }, {});
 
     const jsonResult = Object.values(users);
-    return res.json(jsonResult);
+    return callback(null, jsonResult);
+  });
+}
+
+app.get("/friends", (req, res) => {
+  const id = parseInt(req.query.id);
+  const status = parseInt(req.query.status);
+
+  if (status > 0 && status > 2) {
+    return res.status(400).json({ message: "Invalid status." });
+  }
+
+  getFriends(id, status, null, (error, result) => {
+    if (error) return res.status(500).json({ message: error });
+    return res.json(result);
   });
 });
 
