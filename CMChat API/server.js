@@ -166,13 +166,14 @@ app.post("/edit", (req, res) => {
 
 app.put("/signup", validation.signup);
 
-app.get("/friends/:id", (req, res) => {
-  const id = parseInt(req.params.id);
+app.get("/friends", (req, res) => {
+  const id = parseInt(req.query.id);
+  const status = parseInt(req.query.status);
   const sql = `SELECT u.*
   FROM user u
   INNER JOIN friend f ON (u.id = f.friendId AND f.userId = ${id})
      OR (u.id = f.userId AND f.friendId = ${id})
-  WHERE u.id != ${id} and u.deleted = 0 and u.isSuspended = 0;`;
+  WHERE u.id != ${id} and u.deleted = 0 and u.isSuspended = 0 and f.status = ${status};`;
 
   con.query(sql, (error, data) => {
     if (error) return res.status(500).json({ message: "Invalid id." });
