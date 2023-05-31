@@ -32,10 +32,25 @@
             app:enterAnim="@anim/from_left"
             app:exitAnim="@anim/to_right" />
     </fragment>
+
     <fragment
         android:id="@+id/ProfileFragment"
         android:name="com.cmchat.ui.main.ProfileFragment"
         android:label="ProfileFragment"
         tools:layout="@layout/fragment_profile">
+        <action
+            android:id="@+id/action_ProfileFragment_to_EditProfileFragment"
+            app:destination="@id/EditProfileFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"/>
     </fragment>
+
+    <fragment
+        android:id="@+id/EditProfileFragment"
+        android:name="com.cmchat.ui.main.EditProfileFragment"
+        android:label="EditProfileFragment"
+        tools:layout="@layout/fragment_edit_profile">
+
+    </fragment>
+
 </navigation>
