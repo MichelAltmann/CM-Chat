@@ -1,4 +1,4 @@
-package com.cmchat.ui.main
+package com.cmchat.ui.main.profile
 
 import android.app.Activity
 import android.app.DatePickerDialog
@@ -11,15 +11,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.DatePicker
 import android.widget.EditText
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.navigateUp
 import com.bumptech.glide.Glide
 import com.cmchat.DatePickerFragment
 import com.cmchat.ImageHandler
 import com.cmchat.application.Application
 import com.cmchat.cmchat.databinding.FragmentEditProfileBinding
 import com.cmchat.model.User
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.GregorianCalendar
@@ -40,6 +44,8 @@ class EditProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener  {
     private var profileImage : ByteArray? = null
     private val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     private var calendar = Calendar.getInstance()
+
+    private val viewModel by viewModel<EditProfileViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -69,6 +75,8 @@ class EditProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener  {
 
         calendarFabClick()
 
+        userEditObserver()
+
         val nicknameEt = binding.editProfileNickname
         val usernameEt = binding.editProfileUsername
         val bioEt = binding.editProfileBio
@@ -79,7 +87,6 @@ class EditProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener  {
         birthdateEt.setText(formatter.format(user.birthday!!))
 
         binding.editProfileEditDoneBtn.setOnClickListener {
-
             val nickname = nicknameEt.text.toString()
             val username = usernameEt.text.toString()
             val bio = bioEt.text.toString()
@@ -93,10 +100,36 @@ class EditProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener  {
 
             val date = formatter.parse(birthdateEt.text.toString())
 
-            val updatedUser = User(0, user.email, nickname,username,null, date, profileImage, backgroundImage, bio, null, 0, 0)
+            if (user.backgroundImage.contentEquals(backgroundImage)){
+                backgroundImage = null
+            }
 
+            if (user.profileImage.contentEquals(profileImage)){
+                profileImage = null
+            }
+
+            val updatedUser = User(user.id, user.email, nickname,username,null, date, profileImage, backgroundImage, bio, null, 0, 0)
+
+            viewModel.edit(updatedUser)
         }
 
+        binding.editProfileEditCancelBtn.setOnClickListener {
+            findNavController().navigateUp()
+        }
+
+    }
+
+    private fun userEditObserver() {
+        viewModel.userResponse.observe(viewLifecycleOwner) {
+            Toast.makeText(requireContext(), "Profile edited Successfully!", Toast.LENGTH_SHORT).show()
+            findNavController().navigateUp()
+        }
+        viewModel.error.observe(viewLifecycleOwner) {
+            if (it.message == "Username already in use"){
+                binding.editProfileUsername.error = it.message
+                binding.editProfileUsername.requestFocus()
+            }
+        }
     }
 
     private fun invalidBirthDate(birthdate : String, birthdateEt: EditText) : Boolean{

@@ -85,7 +85,6 @@ app.post("/login", (req, res) => {
         deleted: row.deleted,
         isSuspended: row.isSuspended,
       };
-      console.log(row.password);
       return res.json(user);
     } else {
       return res

@@ -6,6 +6,7 @@ import com.cmchat.retrofit.RepositoryInterface
 import com.cmchat.retrofit.RetrofitInitializer
 import com.cmchat.ui.login.signup.SignupViewModel
 import com.cmchat.ui.main.home.HomeViewModel
+import com.cmchat.ui.main.profile.EditProfileViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.module.Module
@@ -15,6 +16,7 @@ val modelModule : Module = module {
     viewModel { LoginViewModel(get(), get()) }
     viewModel { HomeViewModel(get(), get()) }
     viewModel { SignupViewModel(get()) }
+    viewModel { EditProfileViewModel(get(), get())}
 }
 
 val dataModule = module {

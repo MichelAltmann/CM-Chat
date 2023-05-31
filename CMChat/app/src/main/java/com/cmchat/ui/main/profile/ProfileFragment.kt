@@ -1,6 +1,5 @@
-package com.cmchat.ui.main
+package com.cmchat.ui.main.profile
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -12,9 +11,6 @@ import com.cmchat.application.Application
 import com.cmchat.cmchat.R
 import com.cmchat.cmchat.databinding.FragmentProfileBinding
 import java.text.SimpleDateFormat
-import java.time.YearMonth
-import java.time.format.DateTimeFormatter
-import java.util.Calendar
 import java.util.Locale
 
 class ProfileFragment : Fragment() {

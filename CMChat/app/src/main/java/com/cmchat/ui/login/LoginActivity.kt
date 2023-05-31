@@ -1,7 +1,9 @@
 package com.cmchat.ui.login
 
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -48,6 +50,7 @@ class LoginActivity : AppCompatActivity() {
         val bigPassword = BigInteger(1, md.digest(crudePassword.toByteArray()))
         val password = bigPassword.toString()
         crudePassword = ""
+        Log.i(TAG, "passwordHasher: " + password)
         return password
     }
 
@@ -60,6 +63,7 @@ class LoginActivity : AppCompatActivity() {
             }
         }
         viewModel.error.observe(this) {
+            Log.i(TAG, "observeUser: " + it.message)
             binding.usernameInput.error = "Invalid Username or Password"
             binding.usernameInput.requestFocus()
         }

@@ -35,7 +35,7 @@
 
     <fragment
         android:id="@+id/ProfileFragment"
-        android:name="com.cmchat.ui.main.ProfileFragment"
+        android:name="com.cmchat.ui.main.profile.ProfileFragment"
         android:label="ProfileFragment"
         tools:layout="@layout/fragment_profile">
         <action
@@ -47,7 +47,7 @@
 
     <fragment
         android:id="@+id/EditProfileFragment"
-        android:name="com.cmchat.ui.main.EditProfileFragment"
+        android:name="com.cmchat.ui.main.profile.EditProfileFragment"
         android:label="EditProfileFragment"
         tools:layout="@layout/fragment_edit_profile">
 

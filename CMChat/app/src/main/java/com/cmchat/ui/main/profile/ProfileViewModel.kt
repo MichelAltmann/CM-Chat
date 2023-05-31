@@ -1,4 +1,4 @@
-package com.cmchat.ui.main
+package com.cmchat.ui.main.profile
 
 import androidx.lifecycle.ViewModel
 

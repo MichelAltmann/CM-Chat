@@ -28,4 +28,9 @@ interface ApiService {
         @Body user : User
     ) : Response<SignupResponse>
 
+    @POST("edit/")
+    suspend fun edit(
+        @Body user : User
+    ) : Response<User>
+
 }
