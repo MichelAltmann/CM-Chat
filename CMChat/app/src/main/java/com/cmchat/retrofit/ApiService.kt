@@ -10,6 +10,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ApiService {
 
@@ -18,9 +19,10 @@ interface ApiService {
         @Body loginRequest: LoginRequest
     ) : Response<User>
 
-    @GET("friends/{id}")
+    @GET("friends/")
     suspend fun getFriends(
-        @Path("id") id : Int
+        @Query("id") id : Int,
+        @Query("status") status : Int
     ) : Response<FriendsResponse>
 
     @PUT("signup/")

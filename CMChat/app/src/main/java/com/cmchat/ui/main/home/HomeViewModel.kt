@@ -21,7 +21,7 @@ class HomeViewModel(private val repository: RepositoryInterface, private val app
 
     fun getFriends() = viewModelScope.launch{
         val user = application.getUser()
-        when (val response = repository.getFriends(user.id)) {
+        when (val response = repository.getFriends(user.id, 1)) {
             is NetworkResponse.Success -> {
                 _friendsResponse.value = response.data!!
             }

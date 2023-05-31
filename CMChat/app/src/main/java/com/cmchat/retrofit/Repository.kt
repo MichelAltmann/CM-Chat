@@ -21,9 +21,9 @@ class Repository(private val apiService: ApiService) : RepositoryInterface{
         }
     }
 
-    override suspend fun getFriends(id: Int): NetworkResponse<FriendsResponse> {
+    override suspend fun getFriends(id: Int, status : Int): NetworkResponse<FriendsResponse> {
         return try {
-            val response = apiService.getFriends(id)
+            val response = apiService.getFriends(id, status)
             if (response.isSuccessful){
                 NetworkResponse.Success(response.body()!!)
             } else {
@@ -75,7 +75,7 @@ class Repository(private val apiService: ApiService) : RepositoryInterface{
 
 interface RepositoryInterface {
     suspend fun login(loginRequest: LoginRequest) : NetworkResponse<User>
-    suspend fun getFriends(id: Int) : NetworkResponse<FriendsResponse>
+    suspend fun getFriends(id: Int, status : Int) : NetworkResponse<FriendsResponse>
     suspend fun signup(user: User) : NetworkResponse<SignupResponse>
     suspend fun edit(user: User) : NetworkResponse<User>
 }
