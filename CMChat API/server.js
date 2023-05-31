@@ -5,9 +5,12 @@ const socketIO = require("socket.io");
 const PORT = 8081;
 const Message = require("./Message");
 const bodyParser = require("body-parser");
+const Validation = require("./Validation");
 
 const con = require("./connection");
 const { parse } = require("path");
+
+const validation = new Validation(con);
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -55,7 +58,22 @@ app.post("/login", (req, res) => {
         .json({ success: false, message: "Invalid username or password" });
 
     if (data.length > 0) {
-      return res.json(data[0]);
+      if (data.length > 0) {
+        row = data[0];
+        const user = {
+          id: row.id,
+          nickname: row.nickname,
+          username: row.username,
+          birthday: row.birthday,
+          profileImage: row.profileImage,
+          backgroundImage: row.backgroundImage,
+          bio: row.bio,
+          createdDate: row.createdDate,
+          deleted: row.deleted,
+          isSuspended: row.isSuspended,
+        };
+      }
+      return res.json(user);
     } else {
       return res
         .status(401)
@@ -64,74 +82,58 @@ app.post("/login", (req, res) => {
   });
 });
 
-app.put("/signup", (req, res) => {
-  const user = req.body;
-  const checkSql = "SELECT * FROM user WHERE email = ?";
-  con.query(checkSql, user.email, (error, data) => {
-    if (error)
-      return res.status(500).json({ message: "Internal server error." });
-    if (data.length > 0) {
-      return res.status(400).json({ message: "Email already in use" });
-    } else {
-      const usernameSql = "SELECT * FROM user WHERE username = ?";
-      con.query(usernameSql, user.username, (error, data) => {
+app.post("/edit", (req, res) => {
+  var user = req.body;
+  validation.checkUsername(user, (error, result) => {
+    if (error) return res.status(500).json({ message: error });
+    const sql =
+      "UPDATE user SET nickname = ?, username = ?, birthday = ?, profileImage = ?, backgroundImage = ?, bio = ? where id = ?;";
+    console.log(
+      user.nickname,
+      user.username,
+      Validation.parseDateToSQL(user.birthday),
+      user.profileImage,
+      user.backgroundImage,
+      user.bio,
+      user.id
+    );
+    con.query(
+      sql,
+      [
+        user.nickname,
+        user.username,
+        Validation.parseDateToSQL(user.birthday),
+        user.profileImage,
+        user.backgroundImage,
+        user.bio,
+        user.id,
+      ],
+      (error, data) => {
         if (error)
-          return res.status(500).json({ message: "Internal server error." });
-        if (data.length > 0) {
-          return res.status(400).json({ message: "Username already in use" });
-        } else {
-          const sql =
-            "INSERT INTO user(id, email, password, username, birthday, profileImage, backgroundImage, bio, createdDate, deleted, isSuspended)" +
-            "VALUES(?,?,?,?,?,?,?,?,?,?,?)";
-          con.query(
-            sql,
-            [
-              user.id,
-              user.email,
-              user.password,
-              user.username,
-              parseDateToSQL(user.birthday),
-              user.profileImage,
-              user.backgroundImage,
-              user.bio,
-              parseDateToSQL(user.createdDate),
-              user.deleted,
-              user.isSuspended,
-            ],
-            (error, data) => {
-              if (error) return res.send(error);
-              res.status(200).json({ message: "Signup Successful" });
-            }
-          );
-        }
-      });
-    }
+          return res.status(500).json({ message: "Internal server error:" });
+        const userSql = "SELECT * FROM user WHERE id = ?;";
+        con.query(userSql, user.id, (error, data) => {
+          if (error) return res.status(500).json({ message: error });
+          if (data.length > 0) {
+            row = data[0];
+            const user = {
+              id: row.id,
+              nickname: row.nickname,
+              username: row.username,
+              birthday: row.birthday,
+              profileImage: row.profileImage,
+              backgroundImage: row.backgroundImage,
+              bio: row.bio,
+            };
+          }
+          return res.json(user);
+        });
+      }
+    );
   });
 });
 
-function parseDateToSQL(dateString) {
-  const months = {
-    Jan: "01",
-    Feb: "02",
-    Mar: "03",
-    Apr: "04",
-    May: "05",
-    Jun: "06",
-    Jul: "07",
-    Aug: "08",
-    Sep: "09",
-    Oct: "10",
-    Nov: "11",
-    Dec: "12",
-  };
-
-  const dateObj = new Date(dateString);
-  const month = months[dateObj.toLocaleString("en", { month: "short" })];
-  const day = String(dateObj.getDate()).padStart(2, "0");
-  const year = dateObj.getFullYear();
-
-  return `${year}-${month}-${day}`;
-}
+app.put("/signup", validation.signup);
 
 app.get("/friends/:id", (req, res) => {
   const id = parseInt(req.params.id);
@@ -148,6 +150,7 @@ app.get("/friends/:id", (req, res) => {
       if (!acc[row.id]) {
         acc[row.id] = {
           id: row.id,
+          nickname: row.nickname,
           username: row.username,
           birthday: row.birthday,
           profileImage: row.profileImage,
