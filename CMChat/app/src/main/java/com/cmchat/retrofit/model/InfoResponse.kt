@@ -1,5 +1,5 @@
 package com.cmchat.retrofit.model
 
-class SignupResponse (
+class InfoResponse (
     val message : String
 )

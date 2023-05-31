@@ -125,5 +125,14 @@
         tools:listitem="@layout/friend_request_item"
         app:layout_constraintTop_toBottomOf="@id/profile_friends_request_separator"/>
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/profile_add_friend_fab"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:backgroundTint="@color/primaryColor"
+        android:src="@drawable/ic_add_friend"
+        android:layout_margin="16dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

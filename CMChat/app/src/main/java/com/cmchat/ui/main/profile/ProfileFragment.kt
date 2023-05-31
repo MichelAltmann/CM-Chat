@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide
 import com.cmchat.application.Application
 import com.cmchat.cmchat.R
 import com.cmchat.cmchat.databinding.FragmentProfileBinding
+import com.cmchat.ui.popups.AddFriendPopup
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -49,6 +50,10 @@ class ProfileFragment : Fragment() {
 
         binding.profileEditProfileBtn.setOnClickListener {
             findNavController().navigate(R.id.action_ProfileFragment_to_EditProfileFragment)
+        }
+
+        binding.profileAddFriendFab.setOnClickListener {
+            AddFriendPopup.newInstance().show(parentFragmentManager, AddFriendPopup.TAG)
         }
 
     }

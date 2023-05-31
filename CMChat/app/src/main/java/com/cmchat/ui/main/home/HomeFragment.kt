@@ -1,6 +1,5 @@
 package com.cmchat.ui.main.home
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.cmchat.cmchat.R
 import com.cmchat.cmchat.databinding.FragmentHomeBinding
 import com.cmchat.ui.main.home.adapters.FriendsAdapter
+import com.cmchat.ui.popups.AddFriendPopup
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeFragment : Fragment() {
@@ -41,6 +41,14 @@ class HomeFragment : Fragment() {
         viewModel.getFriends()
 
         itemClickListener()
+
+        onFabClick()
+    }
+
+    private fun onFabClick() {
+        binding.homeAddFriendFab.setOnClickListener {
+            AddFriendPopup.newInstance().show(parentFragmentManager, AddFriendPopup.TAG)
+        }
     }
 
     private fun itemClickListener() {

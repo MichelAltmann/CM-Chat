@@ -50,9 +50,15 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
             when (destination.id){
-                R.id.ProfileFragment -> binding.profileCard.visibility = View.GONE
-                R.id.HomeFragment -> binding.profileCard.visibility = View.VISIBLE
-                R.id.ChatFragment -> binding.profileCard.visibility = View.GONE
+                R.id.ProfileFragment -> {
+                    binding.profileCard.visibility = View.GONE
+                }
+                R.id.HomeFragment -> {
+                    binding.profileCard.visibility = View.VISIBLE
+                }
+                R.id.ChatFragment -> {
+                    binding.profileCard.visibility = View.GONE
+                }
             }
         }
 
@@ -64,3 +70,4 @@ class MainActivity : AppCompatActivity() {
                 || super.onSupportNavigateUp()
     }
 }
+

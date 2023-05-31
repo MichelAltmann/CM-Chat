@@ -168,10 +168,11 @@ app.put("/signup", validation.signup);
 
 app.post("/friend/request", (req, res) => {
   const senderId = req.query.id;
-  const username = req.query.username;
+  const username = req.query.friendUsername;
   const getIdSql = "SELECT id FROM user WHERE username = ?;";
   con.query(getIdSql, username, (error, data) => {
-    if (error) return res.status(500).json({ message: error });
+    if (error)
+      return res.status(500).json({ message: "Internal server error." });
     if (data.length === 0)
       return res
         .status(400)
