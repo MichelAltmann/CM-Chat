@@ -1,6 +1,7 @@
 package com.cmchat.ui.main
 
 import android.app.Activity
+import android.app.DatePickerDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -8,17 +9,23 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.DatePicker
+import android.widget.EditText
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.cmchat.DatePickerFragment
 import com.cmchat.ImageHandler
 import com.cmchat.application.Application
 import com.cmchat.cmchat.databinding.FragmentEditProfileBinding
+import com.cmchat.model.User
 import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.GregorianCalendar
 import java.util.Locale
 
-class EditProfileFragment : Fragment() {
+class EditProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener  {
 
     private lateinit var imagePickerLauncher: ActivityResultLauncher<Intent>
 
@@ -31,6 +38,9 @@ class EditProfileFragment : Fragment() {
     }
     private var backgroundImage : ByteArray? = null
     private var profileImage : ByteArray? = null
+    private val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    private var calendar = Calendar.getInstance()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -46,7 +56,6 @@ class EditProfileFragment : Fragment() {
         val user = application.getUser()
         backgroundImage = user.backgroundImage
         profileImage = user.profileImage
-        val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
         populateBackground()
 
@@ -54,22 +63,88 @@ class EditProfileFragment : Fragment() {
 
         imagePickerLauncher = activityResultLauncher()
 
-        binding.editProfileBackgroundImage.setOnClickListener {
-            selectImage()
-            imgClicked = 1
+        backgroundImageClick()
+
+        profileImageClick()
+
+        calendarFabClick()
+
+        val nicknameEt = binding.editProfileNickname
+        val usernameEt = binding.editProfileUsername
+        val bioEt = binding.editProfileBio
+        val birthdateEt = binding.editProfileBirthdate
+        nicknameEt.setText(user.nickname)
+        usernameEt.setText(user.username)
+        bioEt.setText(user.bio)
+        birthdateEt.setText(formatter.format(user.birthday!!))
+
+        binding.editProfileEditDoneBtn.setOnClickListener {
+
+            val nickname = nicknameEt.text.toString()
+            val username = usernameEt.text.toString()
+            val bio = bioEt.text.toString()
+            val birthdate = birthdateEt.text.toString()
+            if (invalidNickname(nickname, nicknameEt)) return@setOnClickListener
+
+            if (invalidUsername(username, usernameEt)) return@setOnClickListener
+
+            if (invalidBirthDate(birthdate, birthdateEt)) return@setOnClickListener
+
+
+            val date = formatter.parse(birthdateEt.text.toString())
+
+            val updatedUser = User(0, user.email, nickname,username,null, date, profileImage, backgroundImage, bio, null, 0, 0)
+
         }
 
+    }
+
+    private fun invalidBirthDate(birthdate : String, birthdateEt: EditText) : Boolean{
+        if (birthdate == "") {
+            birthdateEt.error = "Invalid date."
+            birthdateEt.requestFocus()
+            return true
+        }
+        return false
+    }
+
+    private fun invalidUsername(username : String,usernameEt: EditText): Boolean {
+        if (username == "") {
+            usernameEt.error = "Invalid Username."
+            usernameEt.requestFocus()
+            return true
+        }
+        return false
+    }
+
+    private fun invalidNickname(nickname : String, nicknameEt: EditText): Boolean {
+        if (nickname == "") {
+            nicknameEt.error = "Invalid Nickname."
+            nicknameEt.requestFocus()
+            return true
+        }
+        return false
+    }
+
+    private fun calendarFabClick() {
+        binding.editProfileCalendarFab.setOnClickListener {
+            val datePicker = DatePickerFragment(this)
+            datePicker.show(parentFragmentManager, "Date dialog")
+        }
+    }
+
+    private fun profileImageClick() {
         binding.editProfileImage.setOnClickListener {
             selectImage()
             imgClicked = 2
         }
+    }
 
-
-        binding.editProfileNickname.setText(user.username)
-        binding.editProfileUsername.setText(user.username)
-        binding.editProfileBio.setText(user.bio)
-        binding.editProfileBirthdate.setText(formatter.format(user.birthday!!))
-
+    private fun backgroundImageClick() {
+        binding.editProfileBackgroundImage.setOnClickListener {
+            selectImage()
+            imgClicked = 1
+        }
     }
 
     private fun activityResultLauncher() =
@@ -111,6 +186,15 @@ class EditProfileFragment : Fragment() {
         if (profileImage != null) {
             Glide.with(requireContext()).load(profileImage).into(binding.editProfileImage)
         }
+    }
+
+    private fun updateBirthdate() {
+        binding.editProfileBirthdate.setText(formatter.format(calendar.time))
+    }
+
+    override fun onDateSet(p0: DatePicker?, year: Int, month: Int, day: Int) {
+        calendar = GregorianCalendar(year,month,day)
+        updateBirthdate()
     }
 
 }

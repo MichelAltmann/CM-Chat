@@ -111,7 +111,7 @@ class SignUpActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
 
     private fun calendarFabClick() {
         binding.signUpBirthdateCalendarFab.setOnClickListener {
-            val datePicker = DatePickerFragment()
+            val datePicker = DatePickerFragment(this)
             datePicker.show(supportFragmentManager, "Date dialog")
         }
     }
@@ -153,7 +153,7 @@ class SignUpActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
             // Hashing the password
             val password = passwordHasher(passwordEt)
 
-            val user = User(0, email, username,password, date, null, null, null, createDate, 0, 0)
+            val user = User(0, email, "",username,password, date, null, null, null, createDate, 0, 0)
 
             viewModel.signup(user)
         }

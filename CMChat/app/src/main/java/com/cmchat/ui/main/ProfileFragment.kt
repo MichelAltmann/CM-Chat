@@ -46,7 +46,8 @@ class ProfileFragment : Fragment() {
 
         val formatter = SimpleDateFormat("dd 'of' MMMM yyyy", Locale.getDefault())
 
-        binding.profileNickname.text = user.username
+        binding.profileNickname.text = user.nickname
+        binding.profileUsername.text = user.username
         binding.profileBio.text = user.bio
         "Born in ${formatter.format(user.birthday!!)}".also { binding.profileBirthdate.text = it }
 

@@ -8,7 +8,7 @@ import androidx.fragment.app.DialogFragment
 import com.cmchat.cmchat.R
 import java.util.Calendar
 
-class DatePickerFragment : DialogFragment() {
+class DatePickerFragment(private val listener: OnDateSetListener) : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val c = Calendar.getInstance()
@@ -17,7 +17,7 @@ class DatePickerFragment : DialogFragment() {
         val day = c[Calendar.DAY_OF_MONTH]
         return DatePickerDialog(
             requireActivity(), R.style.datepicker,
-            requireActivity() as OnDateSetListener?, year, month, day
+            listener, year, month, day
         )
     }
 
