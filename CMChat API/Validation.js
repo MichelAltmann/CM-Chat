@@ -4,6 +4,30 @@ class Validation {
     this.signup = this.signup.bind(this);
   }
 
+  static parseDateToSQL(dateString) {
+    const months = {
+      Jan: "01",
+      Feb: "02",
+      Mar: "03",
+      Apr: "04",
+      May: "05",
+      Jun: "06",
+      Jul: "07",
+      Aug: "08",
+      Sep: "09",
+      Oct: "10",
+      Nov: "11",
+      Dec: "12",
+    };
+
+    const dateObj = new Date(dateString);
+    const month = months[dateObj.toLocaleString("en", { month: "short" })];
+    const day = String(dateObj.getDate()).padStart(2, "0");
+    const year = dateObj.getFullYear();
+
+    return `${year}-${month}-${day}`;
+  }
+
   checkEmail(email, callback) {
     const checkSql = "SELECT * FROM user WHERE email = ?";
     this.con.query(checkSql, email, (error, data) => {
@@ -45,11 +69,11 @@ class Validation {
             user.password,
             user.username,
             user.username,
-            parseDateToSQL(user.birthday),
+            Validation.parseDateToSQL(user.birthday),
             user.profileImage,
             user.backgroundImage,
             user.bio,
-            parseDateToSQL(user.createdDate),
+            Validation.parseDateToSQL(user.createdDate),
             user.deleted,
             user.isSuspended,
           ],
@@ -60,30 +84,6 @@ class Validation {
         );
       });
     });
-  }
-
-  static parseDateToSQL(dateString) {
-    const months = {
-      Jan: "01",
-      Feb: "02",
-      Mar: "03",
-      Apr: "04",
-      May: "05",
-      Jun: "06",
-      Jul: "07",
-      Aug: "08",
-      Sep: "09",
-      Oct: "10",
-      Nov: "11",
-      Dec: "12",
-    };
-
-    const dateObj = new Date(dateString);
-    const month = months[dateObj.toLocaleString("en", { month: "short" })];
-    const day = String(dateObj.getDate()).padStart(2, "0");
-    const year = dateObj.getFullYear();
-
-    return `${year}-${month}-${day}`;
   }
 }
 
