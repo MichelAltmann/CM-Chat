@@ -10,7 +10,9 @@ import com.bumptech.glide.Glide
 import com.cmchat.application.Application
 import com.cmchat.cmchat.R
 import com.cmchat.cmchat.databinding.FragmentProfileBinding
+import com.cmchat.model.User
 import com.cmchat.ui.popups.AddFriendPopup
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -18,8 +20,11 @@ class ProfileFragment : Fragment() {
 
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
-    private val application by lazy {
-        requireActivity().applicationContext as Application
+
+    private val viewModel by viewModel<ProfileViewModel>()
+
+    private val adapter by lazy {
+        FriendsRequestAdapter()
     }
 
     override fun onCreateView(
@@ -33,28 +38,58 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val user = application.getUser()
+        val user = viewModel.getUser()
 
-        Glide.with(requireContext()).load(user.backgroundImage)
-            .placeholder(R.drawable.enter_text_background).into(binding.profileBackgroundImage)
+        putBackgroundImage(user)
 
-        Glide.with(requireContext()).load(user.profileImage).placeholder(R.drawable.ic_user)
-            .into(binding.profileImage)
+        putProfileImage(user)
+
+        friendsRequestObserver()
+
+        viewModel.getFriends()
+
+        binding.profileNickname.text = user.nickname
+
+        binding.profileUsername.text = user.username
+
+        binding.profileBio.text = user.bio
 
         val formatter = SimpleDateFormat("dd 'of' MMMM yyyy", Locale.getDefault())
 
-        binding.profileNickname.text = user.nickname
-        binding.profileUsername.text = user.username
-        binding.profileBio.text = user.bio
         "Born in ${formatter.format(user.birthday!!)}".also { binding.profileBirthdate.text = it }
 
+        editProfileClick()
+
+        addFriendFabClick()
+
+    }
+
+    private fun putProfileImage(user: User) {
+        Glide.with(requireContext()).load(user.profileImage).placeholder(R.drawable.ic_user)
+            .into(binding.profileImage)
+    }
+
+    private fun putBackgroundImage(user: User) {
+        Glide.with(requireContext()).load(user.backgroundImage)
+            .placeholder(R.drawable.enter_text_background).into(binding.profileBackgroundImage)
+    }
+
+    private fun friendsRequestObserver() {
+        viewModel.friendsRequestResponse.observe(viewLifecycleOwner) {
+            binding.profileFriendsRequestRecycler.adapter = adapter
+            adapter.update(it)
+        }
+    }
+
+    private fun editProfileClick() {
         binding.profileEditProfileBtn.setOnClickListener {
             findNavController().navigate(R.id.action_ProfileFragment_to_EditProfileFragment)
         }
+    }
 
+    private fun addFriendFabClick() {
         binding.profileAddFriendFab.setOnClickListener {
             AddFriendPopup.newInstance().show(parentFragmentManager, AddFriendPopup.TAG)
         }
-
     }
 }

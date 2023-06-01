@@ -67,6 +67,11 @@ class AddFriendPopup : DialogFragment() {
             binding.friendUsernameInput.requestFocus()
             return true
         }
+        if (username.equals(viewModel.getUser().username)){
+            binding.friendUsernameInput.error = "Are you not your friend?"
+            binding.friendUsernameInput.requestFocus()
+            return true
+        }
         return false
     }
 

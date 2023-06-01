@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cmchat.application.Application
+import com.cmchat.model.User
 import com.cmchat.retrofit.NetworkResponse
 import com.cmchat.retrofit.RepositoryInterface
 import com.cmchat.retrofit.model.InfoResponse
@@ -12,6 +13,8 @@ import kotlinx.coroutines.launch
 import java.lang.Exception
 
 class AddFriendPopupViewModel(private val repository : RepositoryInterface, private val application: Application) : ViewModel() {
+
+    private val user = application.getUser()
 
     private val _friendAddResponse = MutableLiveData<InfoResponse>()
     val friendAddResponse : LiveData<InfoResponse> = _friendAddResponse
@@ -22,7 +25,7 @@ class AddFriendPopupViewModel(private val repository : RepositoryInterface, priv
     var username = ""
 
     fun addFriend() = viewModelScope.launch {
-        when(val response = repository.addFriend(application.getUser().id, username)){
+        when(val response = repository.addFriend(user.id, username)){
             is NetworkResponse.Success -> {
                 _friendAddResponse.value = response.data!!
             }
@@ -30,5 +33,9 @@ class AddFriendPopupViewModel(private val repository : RepositoryInterface, priv
                 _error.value = response.error!!
             }
         }
+    }
+
+    fun getUser() : User{
+        return user
     }
 }
