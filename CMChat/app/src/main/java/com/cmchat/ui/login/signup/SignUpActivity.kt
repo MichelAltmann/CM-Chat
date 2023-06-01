@@ -1,16 +1,14 @@
 package com.cmchat.ui.login.signup
 
 import android.app.DatePickerDialog
-import android.content.ContentValues.TAG
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.Toast
-import com.cmchat.DatePickerFragment
+import com.cmchat.util.DatePickerFragment
 import com.cmchat.cmchat.databinding.ActivitySignUpBinding
 import com.cmchat.model.User
 import org.koin.androidx.viewmodel.ext.android.viewModel

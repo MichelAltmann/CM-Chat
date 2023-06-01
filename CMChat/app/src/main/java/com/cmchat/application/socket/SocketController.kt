@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment
 import com.cmchat.application.Application
 import com.cmchat.cmchat.R
 import com.cmchat.model.Message
+import com.cmchat.notifications.MessageNotification
 import com.google.gson.Gson
 import org.json.JSONObject
 
@@ -25,6 +26,8 @@ class SocketController(private val application: Application){
 
                 if (application.getCurrentFragment() == R.id.ChatFragment) {
                     newMessage.invoke(message)
+                } else if (message.senderId != user.id){
+                    MessageNotification.sendNotification(application.applicationContext, message)
                 }
 
             }

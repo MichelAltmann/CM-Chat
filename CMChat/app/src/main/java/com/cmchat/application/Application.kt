@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import com.cmchat.application.socket.SocketController
 import com.cmchat.application.socket.SocketHandler
 import com.cmchat.model.User
+import com.cmchat.notifications.MessageNotification
 import io.socket.client.Socket
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -22,6 +23,8 @@ class Application : Application() {
     private var currentFragment = 0
     override fun onCreate() {
         super.onCreate()
+
+        MessageNotification.createNotificationChannel(applicationContext)
 
         startKoin {
             androidLogger()

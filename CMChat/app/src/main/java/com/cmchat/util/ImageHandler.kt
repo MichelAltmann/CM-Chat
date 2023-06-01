@@ -1,4 +1,4 @@
-package com.cmchat
+package com.cmchat.util
 
 import android.app.Activity
 import android.content.Context

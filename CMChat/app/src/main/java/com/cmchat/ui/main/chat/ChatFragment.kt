@@ -13,7 +13,7 @@ import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import com.cmchat.ImageHandler
+import com.cmchat.util.ImageHandler
 import com.cmchat.application.Application
 import com.cmchat.cmchat.databinding.FragmentChatBinding
 import com.cmchat.model.Message
