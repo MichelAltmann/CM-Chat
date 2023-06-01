@@ -179,10 +179,10 @@ app.post("/friend/request", (req, res) => {
         .json({ message: "No user found with that username." });
     const id = data[0].id;
 
-    getFriends(senderId, null, id, (error, result) => {
+    getFriendsInvites(senderId, id, (error, result) => {
+      console.log(senderId + " " + id);
       if (error) return res.status(400).json({ message: error });
       if (result.length > 0) {
-        console.log(result);
         if (result[0].status === 0) {
           return res
             .status(400)
@@ -203,16 +203,21 @@ app.post("/friend/request", (req, res) => {
   });
 });
 
-function getFriends(id, status, friendId, callback) {
+function getFriendsInvites(senderId, friendId, callback) {
+  var sql = `select * from friend f where (f.userId = ${senderId} AND f.friendId = ${friendId}) or (f.friendId = ${senderId} AND f.userId = ${friendId});`;
+
+  con.query(sql, (error, data) => {
+    if (error) return callback("Internal server error.", null);
+    return callback(null, data);
+  });
+}
+
+function getFriends(id, status, callback) {
   var sql = `SELECT u.*, f.status
   FROM user u
   INNER JOIN friend f ON (u.id = f.friendId AND f.userId = ${id})
      OR (u.id = f.userId AND f.friendId = ${id})
   WHERE u.id != ${id} and u.deleted = 0 and u.isSuspended = 0`;
-
-  if (friendId != null) {
-    sql = sql.concat(` and f.friendId = ${friendId}`);
-  }
 
   if (status != null) {
     sql = sql.concat(` and f.status = ${status};`);
@@ -222,13 +227,26 @@ function getFriends(id, status, friendId, callback) {
     if (error) return callback("Invalid query.", null);
     const users = data.reduce((acc, row) => {
       if (!acc[row.id]) {
+        const profileBuffer = row.profileImage;
+        const backgroundBuffer = row.backgroundImage;
+        var profileImage = null;
+
+        if (profileBuffer != null) {
+          profileImage = Array.from(Buffer.from(profileBuffer));
+        }
+        var backgroundImage = null;
+
+        if (backgroundBuffer != null) {
+          backgroundImage = Array.from(Buffer.from(backgroundBuffer));
+        }
+
         acc[row.id] = {
           id: row.id,
           nickname: row.nickname,
           username: row.username,
           birthday: row.birthday,
-          profileImage: row.profileImage,
-          backgroundImage: row.backgroundImage,
+          profileImage: profileImage,
+          backgroundImage: backgroundImage,
           bio: row.bio,
           createdDate: row.createdDate,
           status: row.status,
@@ -250,7 +268,7 @@ app.get("/friends", (req, res) => {
     return res.status(400).json({ message: "Invalid status." });
   }
 
-  getFriends(id, status, null, (error, result) => {
+  getFriends(id, status, (error, result) => {
     if (error) return res.status(500).json({ message: error });
     return res.json(result);
   });
