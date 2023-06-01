@@ -1,4 +1,4 @@
-package com.cmchat.ui.main.profile
+package com.cmchat.ui.main.profile.editprofile
 
 import android.app.Activity
 import android.app.DatePickerDialog
@@ -16,7 +16,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.navigateUp
 import com.bumptech.glide.Glide
 import com.cmchat.DatePickerFragment
 import com.cmchat.ImageHandler

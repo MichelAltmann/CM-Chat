@@ -1,4 +1,4 @@
-package com.cmchat.ui.main.profile
+package com.cmchat.ui.main.profile.editprofile
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

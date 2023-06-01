@@ -9,6 +9,7 @@ import com.cmchat.model.User
 import com.cmchat.retrofit.NetworkResponse
 import com.cmchat.retrofit.RepositoryInterface
 import com.cmchat.retrofit.model.FriendsResponse
+import com.cmchat.retrofit.model.InfoResponse
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
@@ -28,6 +29,34 @@ class ProfileViewModel(private val repository: RepositoryInterface, private val 
             }
             is NetworkResponse.Failed -> {
                 _error.value = response.error
+            }
+        }
+    }
+
+    private val _requestResponse = MutableLiveData<InfoResponse>()
+    val requestResponse : LiveData<InfoResponse> = _requestResponse
+
+    private val _requestError = MutableLiveData<Exception>()
+    val requestError : LiveData<Exception> = _requestError
+
+    fun acceptRequest(friendId : Int) = viewModelScope.launch {
+        when (val response = repository.acceptFriend(user.id, friendId)) {
+            is NetworkResponse.Success -> {
+                _requestResponse.value = response.data!!
+            }
+            is NetworkResponse.Failed -> {
+                _requestError.value = response.error
+            }
+        }
+    }
+
+    fun refuseRequest(friendId: Int) = viewModelScope.launch {
+        when (val response = repository.refuseFriend(user.id, friendId)) {
+            is NetworkResponse.Success -> {
+                _requestResponse.value = response.data!!
+            }
+            is NetworkResponse.Failed -> {
+                _requestError.value = response.error
             }
         }
     }

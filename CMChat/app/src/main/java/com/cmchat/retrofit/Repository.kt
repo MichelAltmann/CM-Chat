@@ -90,6 +90,44 @@ class Repository(private val apiService: ApiService) : RepositoryInterface{
             NetworkResponse.Failed(e)
         }
     }
+
+    override suspend fun acceptFriend(id: Int, friendId: Int): NetworkResponse<InfoResponse> {
+        return try {
+            val response = apiService.acceptFriend(id, friendId)
+            if (response.isSuccessful){
+                NetworkResponse.Success(response.body()!!)
+            } else {
+                val errorBody = response.errorBody()?.string()
+                val errorMessage = try {
+                    JSONObject(errorBody).getString("message")
+                } catch (e : JSONException){
+                    "Uknown error"
+                }
+                NetworkResponse.Failed(Exception(errorMessage))
+            }
+        } catch (e : Exception){
+            NetworkResponse.Failed(e)
+        }
+    }
+
+    override suspend fun refuseFriend(id: Int, friendId: Int): NetworkResponse<InfoResponse> {
+        return try {
+            val response = apiService.refuseFriend(id, friendId)
+            if (response.isSuccessful){
+                NetworkResponse.Success(response.body()!!)
+            } else {
+                val errorBody = response.errorBody()?.string()
+                val errorMessage = try {
+                    JSONObject(errorBody).getString("message")
+                } catch (e : JSONException){
+                    "Uknown error"
+                }
+                NetworkResponse.Failed(Exception(errorMessage))
+            }
+        } catch (e : Exception){
+            NetworkResponse.Failed(e)
+        }
+    }
 }
 
 interface RepositoryInterface {
@@ -98,4 +136,7 @@ interface RepositoryInterface {
     suspend fun signup(user: User) : NetworkResponse<InfoResponse>
     suspend fun edit(user: User) : NetworkResponse<User>
     suspend fun addFriend(id: Int, friendUsername : String) : NetworkResponse<InfoResponse>
+
+    suspend fun acceptFriend(id : Int, friendId : Int) : NetworkResponse<InfoResponse>
+    suspend fun refuseFriend(id : Int, friendId : Int) : NetworkResponse<InfoResponse>
 }

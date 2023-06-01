@@ -47,6 +47,7 @@
         android:layout_width="38dp"
         android:layout_height="40dp"
         android:src="@drawable/ic_close"
+        android:id="@+id/friend_request_refuse_btn"
         android:scaleType="centerCrop"
         android:backgroundTint="@color/onAccentColor"
         android:adjustViewBounds="true"

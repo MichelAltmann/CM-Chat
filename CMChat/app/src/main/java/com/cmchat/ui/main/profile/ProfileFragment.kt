@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.cmchat.application.Application
@@ -48,6 +49,10 @@ class ProfileFragment : Fragment() {
 
         viewModel.getFriends()
 
+        onRefuseRequestClick()
+
+        onAcceptRequestClick()
+
         binding.profileNickname.text = user.nickname
 
         binding.profileUsername.text = user.username
@@ -64,6 +69,18 @@ class ProfileFragment : Fragment() {
 
     }
 
+    private fun onAcceptRequestClick() {
+        adapter.acceptRequestClick = {
+            viewModel.acceptRequest(it)
+        }
+    }
+
+    private fun onRefuseRequestClick() {
+        adapter.refuseRequestClick = {
+            viewModel.refuseRequest(it)
+        }
+    }
+
     private fun putProfileImage(user: User) {
         Glide.with(requireContext()).load(user.profileImage).placeholder(R.drawable.ic_user)
             .into(binding.profileImage)
@@ -78,6 +95,13 @@ class ProfileFragment : Fragment() {
         viewModel.friendsRequestResponse.observe(viewLifecycleOwner) {
             binding.profileFriendsRequestRecycler.adapter = adapter
             adapter.update(it)
+        }
+        viewModel.requestResponse.observe(viewLifecycleOwner) {
+            Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+            viewModel.getFriends()
+        }
+        viewModel.requestError.observe(viewLifecycleOwner) {
+            Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
         }
     }
 

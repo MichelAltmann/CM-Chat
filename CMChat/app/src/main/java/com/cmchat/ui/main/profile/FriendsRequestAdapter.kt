@@ -14,6 +14,8 @@ class FriendsRequestAdapter : RecyclerView.Adapter<FriendsRequestAdapter.ViewHol
 
     private val friendsRequest : ArrayList<Friend> = arrayListOf()
     lateinit var friendRequestClick : (Int) -> Unit
+    lateinit var acceptRequestClick : (Int) -> Unit
+    lateinit var refuseRequestClick : (Int) -> Unit
 
     inner class ViewHolder(private val binding : FriendRequestItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(friend : Friend) {
@@ -23,6 +25,13 @@ class FriendsRequestAdapter : RecyclerView.Adapter<FriendsRequestAdapter.ViewHol
             binding.friendUserBirthdate.text = formatter.format(friend.birthday)
             itemView.setOnClickListener {
                 friendRequestClick.invoke(friend.id)
+            }
+
+            binding.friendRequestAcceptBtn.setOnClickListener {
+                acceptRequestClick.invoke(friend.id)
+            }
+            binding.friendRequestRefuseBtn.setOnClickListener {
+                refuseRequestClick.invoke(friend.id)
             }
         }
     }

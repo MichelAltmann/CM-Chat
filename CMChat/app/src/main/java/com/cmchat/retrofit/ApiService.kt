@@ -30,6 +30,18 @@ interface ApiService {
         @Query("friendUsername") friendUsername : String
     ) : Response<InfoResponse>
 
+    @POST("friend/request/accept")
+    suspend fun acceptFriend(
+        @Query("id") id : Int,
+        @Query("friendId") friendId : Int
+    ) : Response<InfoResponse>
+
+    @POST("friend/request/refuse")
+    suspend fun refuseFriend(
+        @Query("id") id : Int,
+        @Query("friendId") friendId : Int
+    ) : Response<InfoResponse>
+
     @PUT("signup/")
     suspend fun signup(
         @Body user : User

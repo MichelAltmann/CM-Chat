@@ -212,6 +212,28 @@ function getFriendsInvites(senderId, friendId, callback) {
   });
 }
 
+app.post("/friend/request/accept", (req, res) => {
+  const senderId = req.query.friendId;
+  const receiverId = req.query.id;
+  const sql = "UPDATE friend SET status = ? WHERE userId = ? and friendId = ?";
+  con.query(sql, [1, senderId, receiverId], (error, data) => {
+    if (error)
+      return res.status(500).json({ message: "Internal server error" });
+    return res.json({ message: "Friend request accepted." });
+  });
+});
+
+app.post("/friend/request/refuse", (req, res) => {
+  const senderId = req.query.friendId;
+  const receiverId = req.query.id;
+  const sql = "DELETE FROM friend WHERE userId = ? and friendId = ?;";
+  con.query(sql, [senderId, receiverId], (error, data) => {
+    if (error)
+      return res.status(500).json({ message: "Internal server error" });
+    return res.json({ message: "Friend request refused." });
+  });
+});
+
 function getFriends(id, status, callback) {
   var sql = `SELECT u.*, f.*
   FROM user u
