@@ -2,11 +2,7 @@ package com.cmchat.ui.main.chat
 
 import android.app.Activity
 import android.content.ContentValues
-import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Matrix
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -16,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.exifinterface.media.ExifInterface
 import androidx.fragment.app.Fragment
 import com.cmchat.ImageHandler
 import com.cmchat.application.Application
@@ -24,9 +19,7 @@ import com.cmchat.cmchat.databinding.FragmentChatBinding
 import com.cmchat.model.Message
 import com.cmchat.model.User
 import com.google.gson.Gson
-import org.json.JSONObject
-import java.io.ByteArrayOutputStream
-import java.io.IOException
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ChatFragment : Fragment() {
 
@@ -38,10 +31,13 @@ class ChatFragment : Fragment() {
     }
     private val messages: ArrayList<Message> = arrayListOf()
 
+    var visibility = false
+
     private lateinit var imagePickerLauncher: ActivityResultLauncher<Intent>
     private lateinit var myApplication: Application
     private lateinit var user: User
     private var id = 0
+    private val viewModel by viewModel<ChatViewModel>()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -55,7 +51,6 @@ class ChatFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         myApplication = requireActivity().applicationContext as Application
 
         val user = myApplication.getUser()
@@ -66,13 +61,27 @@ class ChatFragment : Fragment() {
 
         val socket = myApplication.getSocket()
 
+        viewModel.messageResponse.observe(viewLifecycleOwner) {
+            if (user.id == it.senderId) messages.removeLast()
+            messages.add(it)
+            messagesAdapter.update(messages, user)
+            binding.messagesRecycler.scrollToPosition(messages.size - 1)
+        }
+
+        viewModel.newMessage()
+
         imagePickerLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == Activity.RESULT_OK) {
 
                     val data: Intent? = result.data
                     val selectedImageUri: Uri? = data?.data
-                    val byteArray: ByteArray? = selectedImageUri?.let { ImageHandler.uriToByteArray(selectedImageUri, requireActivity()) }
+                    val byteArray: ByteArray? = selectedImageUri?.let {
+                        ImageHandler.uriToByteArray(
+                            selectedImageUri,
+                            requireActivity()
+                        )
+                    }
 
                     if (byteArray != null) {
                         val messageJson = createJsonMessage(
@@ -130,23 +139,6 @@ class ChatFragment : Fragment() {
             }
         }
 
-        socket.on("newMessage" + user.id) { args ->
-            if (args[0] != null) {
-                val messageJson = args[0] as JSONObject
-                val gson = Gson()
-                val message = gson.fromJson(messageJson.toString(), Message::class.java)
-
-                if (user.id == message.senderId) {
-                    messages.removeLast()
-                }
-                requireActivity().runOnUiThread {
-                    messages.add(message)
-                    messagesAdapter.update(messages, user)
-                    binding.messagesRecycler.scrollToPosition(messages.size - 1)
-                }
-            }
-        }
-
 
     }
 
@@ -166,6 +158,16 @@ class ChatFragment : Fragment() {
     private fun selectImage() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         imagePickerLauncher.launch(intent)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        visibility = true
+    }
+
+    override fun onStop() {
+        super.onStop()
+        visibility = false
     }
 
     override fun onDestroyView() {

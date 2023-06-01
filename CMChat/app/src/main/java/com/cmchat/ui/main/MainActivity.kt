@@ -1,25 +1,20 @@
 package com.cmchat.ui.main
 
 import android.content.ContentValues.TAG
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
-import androidx.navigation.NavController
-import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.Resource
 import com.cmchat.application.Application
 import com.cmchat.cmchat.R
 import com.cmchat.cmchat.databinding.ActivityMainBinding
 import com.cmchat.model.User
-import org.koin.core.component.getScopeId
+import com.cmchat.ui.main.chat.ChatFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -63,6 +58,7 @@ class MainActivity : AppCompatActivity() {
                     binding.profileCard.visibility = View.GONE
                 }
             }
+            application.setCurrentFragment(destination.id)
         }
 
     }

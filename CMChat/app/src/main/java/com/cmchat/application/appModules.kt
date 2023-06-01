@@ -5,6 +5,7 @@ import com.cmchat.retrofit.Repository
 import com.cmchat.retrofit.RepositoryInterface
 import com.cmchat.retrofit.RetrofitInitializer
 import com.cmchat.ui.login.signup.SignupViewModel
+import com.cmchat.ui.main.chat.ChatViewModel
 import com.cmchat.ui.main.home.HomeViewModel
 import com.cmchat.ui.main.profile.editprofile.EditProfileViewModel
 import com.cmchat.ui.main.profile.ProfileViewModel
@@ -14,25 +15,26 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
-val modelModule : Module = module {
+val modelModule: Module = module {
     viewModel { LoginViewModel(get(), get()) }
     viewModel { HomeViewModel(get(), get()) }
+    viewModel { ChatViewModel (get()) }
     viewModel { SignupViewModel(get()) }
-    viewModel {ProfileViewModel(get(), get())}
+    viewModel { ProfileViewModel(get(), get()) }
     viewModel { EditProfileViewModel(get(), get()) }
-    viewModel { AddFriendPopupViewModel(get(), get())}
+    viewModel { AddFriendPopupViewModel(get(), get()) }
 }
 
 val dataModule = module {
-    single { RetrofitInitializer.create(androidContext())}
+    single { RetrofitInitializer.create(androidContext()) }
 }
 
-val retrofitModule : Module = module {
-    single<RepositoryInterface> {Repository(get())}
+val retrofitModule: Module = module {
+    single<RepositoryInterface> { Repository(get()) }
 }
 
-val applicationModule : Module = module {
-    single {androidContext() as Application}
+val applicationModule: Module = module {
+    single { androidContext() as Application }
 }
 
-val appModules : List<Module> = listOf(retrofitModule, dataModule, modelModule, applicationModule)
+val appModules: List<Module> = listOf(retrofitModule, dataModule, modelModule, applicationModule)

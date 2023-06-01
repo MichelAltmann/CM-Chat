@@ -31,6 +31,7 @@ class LoginViewModel(
                 _user.value = response.data
                 application.connect()
                 application.setUser(response.data)
+                application.setController()
             }
             is NetworkResponse.Failed -> {
                 _error.value = response.error
