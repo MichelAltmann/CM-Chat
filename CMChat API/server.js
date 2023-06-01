@@ -213,7 +213,7 @@ function getFriendsInvites(senderId, friendId, callback) {
 }
 
 function getFriends(id, status, callback) {
-  var sql = `SELECT u.*, f.status
+  var sql = `SELECT u.*, f.*
   FROM user u
   INNER JOIN friend f ON (u.id = f.friendId AND f.userId = ${id})
      OR (u.id = f.userId AND f.friendId = ${id})
@@ -227,6 +227,7 @@ function getFriends(id, status, callback) {
     if (error) return callback("Invalid query.", null);
     const users = data.reduce((acc, row) => {
       if (!acc[row.id]) {
+        if (id === row.userId) return acc;
         const profileBuffer = row.profileImage;
         const backgroundBuffer = row.backgroundImage;
         var profileImage = null;
