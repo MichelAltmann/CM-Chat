@@ -20,6 +20,7 @@ import com.bumptech.glide.Glide
 import com.cmchat.DatePickerFragment
 import com.cmchat.ImageHandler
 import com.cmchat.application.Application
+import com.cmchat.cmchat.R
 import com.cmchat.cmchat.databinding.FragmentEditProfileBinding
 import com.cmchat.model.User
 import org.koin.androidx.viewmodel.ext.android.viewModel

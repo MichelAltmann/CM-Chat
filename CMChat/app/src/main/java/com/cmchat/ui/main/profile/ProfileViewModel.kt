@@ -15,12 +15,13 @@ import java.lang.Exception
 
 class ProfileViewModel(private val repository: RepositoryInterface, private val application: Application) : ViewModel() {
 
-    private val user = application.getUser()
 
     private val _friendsRequestResponse = MutableLiveData<FriendsResponse>()
     val friendsRequestResponse : LiveData<FriendsResponse> = _friendsRequestResponse
     private val _error = MutableLiveData<Exception>()
     val error : LiveData<Exception> = _error
+
+    var user = application.getUser()
 
     fun getFriends() = viewModelScope.launch{
         when (val response = repository.getFriends(user.id, 0)) {
@@ -61,7 +62,4 @@ class ProfileViewModel(private val repository: RepositoryInterface, private val 
         }
     }
 
-    fun getUser() : User {
-        return user
-    }
 }

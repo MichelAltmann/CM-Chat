@@ -51,6 +51,11 @@
         android:label="EditProfileFragment"
         tools:layout="@layout/fragment_edit_profile">
 
+        <action
+            android:id="@+id/action_EditProfileFragment_to_ProfileFragment"
+            app:destination="@id/ProfileFragment"
+            app:enterAnim="@anim/to_right"
+            app:exitAnim="@anim/from_left"/>
     </fragment>
 
 </navigation>

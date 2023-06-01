@@ -249,7 +249,7 @@ function getFriends(id, status, callback) {
     if (error) return callback("Invalid query.", null);
     const users = data.reduce((acc, row) => {
       if (!acc[row.id]) {
-        if (id === row.userId) return acc;
+        if (id === row.userId && row.status === 0) return acc;
         const profileBuffer = row.profileImage;
         const backgroundBuffer = row.backgroundImage;
         var profileImage = null;

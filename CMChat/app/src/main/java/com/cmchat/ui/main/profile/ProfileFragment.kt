@@ -28,6 +28,11 @@ class ProfileFragment : Fragment() {
         FriendsRequestAdapter()
     }
 
+    private val application by lazy {
+        requireActivity().applicationContext as Application
+    }
+
+    private lateinit var user : User
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -39,12 +44,6 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val user = viewModel.getUser()
-
-        putBackgroundImage(user)
-
-        putProfileImage(user)
-
         friendsRequestObserver()
 
         viewModel.getFriends()
@@ -52,6 +51,21 @@ class ProfileFragment : Fragment() {
         onRefuseRequestClick()
 
         onAcceptRequestClick()
+
+        editProfileClick()
+
+        addFriendFabClick()
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        user = application.getUser()
+        viewModel.user = user
+        putBackgroundImage()
+
+        putProfileImage()
 
         binding.profileNickname.text = user.nickname
 
@@ -62,11 +76,6 @@ class ProfileFragment : Fragment() {
         val formatter = SimpleDateFormat("dd 'of' MMMM yyyy", Locale.getDefault())
 
         "Born in ${formatter.format(user.birthday!!)}".also { binding.profileBirthdate.text = it }
-
-        editProfileClick()
-
-        addFriendFabClick()
-
     }
 
     private fun onAcceptRequestClick() {
@@ -81,12 +90,12 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun putProfileImage(user: User) {
+    private fun putProfileImage() {
         Glide.with(requireContext()).load(user.profileImage).placeholder(R.drawable.ic_user)
             .into(binding.profileImage)
     }
 
-    private fun putBackgroundImage(user: User) {
+    private fun putBackgroundImage() {
         Glide.with(requireContext()).load(user.backgroundImage)
             .placeholder(R.drawable.enter_text_background).into(binding.profileBackgroundImage)
     }
