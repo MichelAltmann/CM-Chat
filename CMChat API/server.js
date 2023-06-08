@@ -10,6 +10,7 @@ const path = require("path");
 
 const con = require("./connection");
 const multer = require("multer");
+const fs = require("fs");
 
 const validation = new Validation(con);
 
@@ -71,7 +72,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-app.post("/upload", upload.single("image"), (req, res) => {
+app.post("/image", upload.single("image"), (req, res) => {
   const image = req.file;
   if (image == null) {
     return res.status(400).json({ message: "Bad request." });
@@ -81,6 +82,42 @@ app.post("/upload", upload.single("image"), (req, res) => {
 
   return res.json({ imageId: imageId });
 });
+
+app.delete("/image", (req, res) => {
+  const lastImageId = req.query.lastImageId;
+  if (lastImageId == null) {
+    return res.status(400).json({ message: "No image found." });
+  }
+  deleteImage(lastImageId, (error, result) => {
+    if (error) {
+      console.log(error);
+      return res.status(400).json({ error });
+    }
+
+    return res.status(200).json({ message: "Image deleted successfully." });
+  });
+});
+
+function deleteImage(imageId, callback) {
+  const imagePath = "images/" + imageId;
+  console.log(imagePath);
+  fs.access(imagePath, fs.constants.F_OK, (error) => {
+    if (error) {
+      // File does not exist
+      return callback("Image not found", null);
+    }
+
+    // Delete the file using Multer's removeFile method
+    fs.unlink(imagePath, (error) => {
+      if (error) {
+        // Error occurred while deleting the file
+        return callback("Internal server error", null);
+      }
+
+      return callback(null, "Image deleted successfully");
+    });
+  });
+}
 
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
