@@ -49,6 +49,8 @@ io.on("connection", (socket) => {
       messageObj.receiverId,
       messageObj.text,
       messageObj.senderId,
+      messageObj.senderName,
+      messageObj.senderImage,
       messageObj.image,
       "sent"
     );
@@ -261,26 +263,14 @@ function getFriends(id, status, callback) {
     const users = data.reduce((acc, row) => {
       if (!acc[row.id]) {
         if (id === row.userId && row.status === 0) return acc;
-        const profileBuffer = row.profileImage;
-        const backgroundBuffer = row.backgroundImage;
-        var profileImage = null;
-
-        if (profileBuffer != null) {
-          profileImage = Array.from(Buffer.from(profileBuffer));
-        }
-        var backgroundImage = null;
-
-        if (backgroundBuffer != null) {
-          backgroundImage = Array.from(Buffer.from(backgroundBuffer));
-        }
 
         acc[row.id] = {
           id: row.id,
           nickname: row.nickname,
           username: row.username,
           birthday: row.birthday,
-          profileImage: profileImage,
-          backgroundImage: backgroundImage,
+          profileImage: row.profileImage,
+          backgroundImage: row.backgroundImage,
           bio: row.bio,
           createdDate: row.createdDate,
           status: row.status,
