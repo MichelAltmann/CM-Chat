@@ -150,6 +150,26 @@ class Repository(private val apiService: ApiService) : RepositoryInterface{
             NetworkResponse.Failed(e)
         }
     }
+
+    override suspend fun deleteImage(imageId : String?): NetworkResponse<InfoResponse> {
+        return try {
+            val response = apiService.deleteImage(imageId)
+            if (response.isSuccessful){
+                NetworkResponse.Success(response.body()!!)
+            } else {
+                val errorBody = response.errorBody()?.string()
+                val errorMessage = try {
+                    JSONObject(errorBody).getString("message")
+                } catch (e : JSONException){
+                    "Uknown error"
+                }
+                NetworkResponse.Failed(Exception(errorMessage))
+            }
+        } catch (e : Exception){
+            NetworkResponse.Failed(e)
+        }
+    }
+
 }
 
 interface RepositoryInterface {
@@ -161,4 +181,5 @@ interface RepositoryInterface {
     suspend fun acceptFriend(id : Int, friendId : Int) : NetworkResponse<InfoResponse>
     suspend fun refuseFriend(id : Int, friendId : Int) : NetworkResponse<InfoResponse>
     suspend fun uploadImage(image : MultipartBody.Part) : NetworkResponse<ImageResponse>
+    suspend fun deleteImage(imageId : String?) : NetworkResponse<InfoResponse>
 }

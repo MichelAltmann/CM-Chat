@@ -47,7 +47,8 @@ class EditProfileViewModel(private val repository: RepositoryInterface, private 
 
     fun uploadImage(byteArray : ByteArray, profileOrBg : Int) = viewModelScope.launch {
         val requestBody = byteArray.toRequestBody("image/jpeg".toMediaType())
-        when(val response = repository.uploadImage(MultipartBody.Part.createFormData("image", "image.jpg", requestBody))){
+        val multipartBody = MultipartBody.Part.createFormData("image", "image.jpg", requestBody)
+        when(val response = repository.uploadImage(multipartBody)){
             is NetworkResponse.Success -> {
                 if (profileOrBg == 1) {
                     _bgResponse.value = response.data!!
@@ -58,6 +59,18 @@ class EditProfileViewModel(private val repository: RepositoryInterface, private 
             }
             is NetworkResponse.Failed -> {
                 _error.value = response.error!!
+            }
+        }
+    }
+
+
+    fun deleteImage(imageId : String?) = viewModelScope.launch {
+        when(val response = repository.deleteImage(imageId)) {
+            is NetworkResponse.Success -> {
+                Log.i(TAG, "deleteImage: " + response.data.message)
+            }
+            is NetworkResponse.Failed -> {
+                Log.i(TAG, "deleteImageError: " + response.error.message)
             }
         }
     }

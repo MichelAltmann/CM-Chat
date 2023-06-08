@@ -10,6 +10,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -59,9 +60,12 @@ interface ApiService {
     ) : Response<User>
 
     @Multipart
-    @POST("upload/")
+    @POST("image/")
     suspend fun uploadImage(
         @Part image : MultipartBody.Part
     ) : Response<ImageResponse>
-
+    @DELETE("image/")
+    suspend fun deleteImage(
+        @Query("lastImageId") lastImageId : String?
+    ) : Response<InfoResponse>
 }

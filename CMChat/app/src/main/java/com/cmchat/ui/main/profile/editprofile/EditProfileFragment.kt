@@ -41,6 +41,9 @@ class EditProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
     private val application by lazy {
         requireActivity().applicationContext as Application
     }
+    private val user by lazy {
+        application.getUser()
+    }
     private var backgroundImage: String? = null
     private var profileImage: String? = null
     private val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
@@ -60,7 +63,6 @@ class EditProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val user = application.getUser()
         backgroundImage = user.backgroundImage
         profileImage = user.profileImage
 
@@ -91,6 +93,12 @@ class EditProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
 
         binding.editProfileEditCancelBtn.setOnClickListener {
             findNavController().navigateUp()
+            if (user.profileImage != profileImage) {
+                viewModel.deleteImage(profileImage)
+            }
+            if (user.backgroundImage != backgroundImage){
+                viewModel.deleteImage(backgroundImage)
+            }
         }
 
     }
@@ -116,12 +124,12 @@ class EditProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
 
             val date = formatter.parse(birthdateEt.text.toString())
 
-            if (user.backgroundImage.contentEquals(backgroundImage)) {
-                backgroundImage = null
+            if (user.profileImage != profileImage) {
+                viewModel.deleteImage(user.profileImage)
             }
 
-            if (user.profileImage.contentEquals(profileImage)) {
-                profileImage = null
+            if (user.backgroundImage != backgroundImage) {
+                viewModel.deleteImage(user.backgroundImage)
             }
 
             val updatedUser = User(
@@ -232,9 +240,9 @@ class EditProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
                 }
 
                 if (byteArray != null) {
-                    if (imgClicked == 1) {
+                    if (imgClicked == 1) { // 1 == background
                         viewModel.uploadImage(byteArray, 1)
-                    } else if (imgClicked == 2) {
+                    } else if (imgClicked == 2) { // 2 == profile
                         viewModel.uploadImage(byteArray, 2)
                     }
                 }
