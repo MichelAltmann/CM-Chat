@@ -95,6 +95,8 @@ class ChatFragment : Fragment() {
                             Message(
                                 user.id,
                                 id,
+                                user.nickname,
+                                user.profileImage,
                                 binding.textInput.text.toString(),
                                 byteArray,
                                 "sending"
@@ -127,6 +129,8 @@ class ChatFragment : Fragment() {
                     Message(
                         user.id,
                         id,
+                        user.nickname,
+                        user.profileImage,
                         binding.textInput.text.toString(),
                         null,
                         "sending"
@@ -149,7 +153,11 @@ class ChatFragment : Fragment() {
         image: ByteArray?,
         status: String
     ): String {
-        val message = Message(user.id, id, text, image, status)
+        val message = Message(
+            user.id, id,
+            user.nickname,
+            user.profileImage, text, image, status
+        )
         val gson = Gson()
         val messageJson = gson.toJson(message)
         return messageJson

@@ -7,6 +7,7 @@ import com.bumptech.glide.Glide
 import com.cmchat.cmchat.R
 import com.cmchat.cmchat.databinding.FriendRequestItemBinding
 import com.cmchat.model.Friend
+import com.cmchat.util.ImageHandler
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -21,7 +22,7 @@ class FriendsRequestAdapter : RecyclerView.Adapter<FriendsRequestAdapter.ViewHol
         fun bind(friend : Friend) {
             val formatter = SimpleDateFormat("dd 'of' MMM yyyy", Locale.getDefault())
             binding.friendUserName.text = friend.username
-            Glide.with(binding.friendUserImage).load(friend.profileImage).placeholder(R.drawable.ic_user).into(binding.friendUserImage)
+            Glide.with(binding.friendUserImage).load(ImageHandler.IMAGE_GETTER_URL+friend.profileImage).placeholder(R.drawable.ic_user).into(binding.friendUserImage)
             binding.friendUserBirthdate.text = formatter.format(friend.birthday)
             itemView.setOnClickListener {
                 friendRequestClick.invoke(friend.id)

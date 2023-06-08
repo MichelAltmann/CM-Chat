@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.NotificationTarget
 import com.cmchat.cmchat.R
 import com.cmchat.model.Message
+import com.cmchat.util.ImageHandler
 
 
 object MessageNotification {
@@ -70,7 +71,7 @@ object MessageNotification {
 
 
         val contentView = RemoteViews(context.packageName, R.layout.notification_message)
-        contentView.setTextViewText(R.id.notification_message_sender, message.senderId.toString())
+        contentView.setTextViewText(R.id.notification_message_sender, message.senderName)
         contentView.setTextViewText(R.id.notification_message_text, message.text)
         contentView.setImageViewResource(R.id.notification_message_image, R.drawable.ic_user)
 
@@ -93,10 +94,10 @@ object MessageNotification {
         )
 
 
-            Glide.with(context)
-                .asBitmap()
-                .load(R.drawable.ic_user)
-                .into(notificationTarget)
+        Glide.with(context)
+            .asBitmap()
+            .load(ImageHandler.IMAGE_GETTER_URL + message.senderImage)
+            .into(notificationTarget)
 
 
 

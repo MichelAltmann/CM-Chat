@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.cmchat.cmchat.databinding.UserItemBinding
 import com.cmchat.model.Friend
+import com.cmchat.util.ImageHandler
 
 class FriendsAdapter : RecyclerView.Adapter<FriendsAdapter.ViewHolder>() {
 
@@ -17,7 +18,7 @@ class FriendsAdapter : RecyclerView.Adapter<FriendsAdapter.ViewHolder>() {
             binding.userName.text = friend.username
             binding.userLastMessage.text = friend.id.toString()
             binding.userLastMessageTime.text = "00:00"
-            Glide.with(binding.userImage).load(friend.profileImage).into(binding.userImage)
+            Glide.with(binding.userImage).load(ImageHandler.IMAGE_GETTER_URL+friend.profileImage).into(binding.userImage)
             itemView.setOnClickListener {
                 friendClick.invoke(friend.id)
             }
