@@ -6,9 +6,10 @@ const PORT = 8081;
 const Message = require("./Message");
 const bodyParser = require("body-parser");
 const Validation = require("./Validation");
+const path = require("path");
 
 const con = require("./connection");
-const { parse } = require("path");
+const multer = require("multer");
 
 const validation = new Validation(con);
 
@@ -23,6 +24,16 @@ const io = socketIO(server, {
     methods: ["GET", "POST"], // Allow only GET and POST requests
     allowedHeaders: ["Content-Type"], // Allow only specific headers
   },
+});
+
+app.use("/images", express.static(path.join("images")));
+
+app.get("/image", (req, res) => {
+  if (req.query.imageId == null) {
+    return res.status(400).send({ message: "Bad request." });
+  }
+  const image = `${__dirname}/images/${req.query.imageId}`; // Replace with the actual path to your image
+  res.sendFile(image);
 });
 
 io.on("connection", (socket) => {
@@ -44,6 +55,29 @@ io.on("connection", (socket) => {
     io.emit("newMessage" + message.receiverId, message);
     io.emit("newMessage" + message.senderId, message);
   });
+});
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "images");
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + "-" + Math.random() * 1e20;
+    cb(null, file.originalname + "-" + uniqueSuffix + ".jpg");
+  },
+});
+
+const upload = multer({ storage: storage });
+
+app.post("/upload", upload.single("image"), (req, res) => {
+  if (req.file == null) {
+    return res.status(400).json({ message: "Bad request." });
+  }
+  const image = req.file;
+
+  const imageId = image.filename;
+
+  return res.json({ imageId: imageId });
 });
 
 app.post("/login", (req, res) => {
@@ -295,6 +329,11 @@ app.get("/friends", (req, res) => {
     if (error) return res.status(500).json({ message: error });
     return res.json(result);
   });
+});
+
+app.get("/", (req, res) => {
+  console.log("a" + req.ip);
+  return res.json("Salve fdp");
 });
 
 server.listen(PORT, () => {
