@@ -7,18 +7,35 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
+import android.view.LayoutInflater
+import android.widget.ImageView
+import android.widget.RemoteViews
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.BitmapImageViewTarget
+import com.bumptech.glide.request.target.NotificationTarget
 import com.cmchat.cmchat.R
+import com.cmchat.cmchat.databinding.NotificationMessageBinding
 import com.cmchat.model.Message
-import okhttp3.internal.notify
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
 
 object MessageNotification {
     private const val CHANNEL_ID = "messageChannel"
     private const val NOTIFICATION_ID = 13
+    lateinit var messageClick: (Int) -> Unit
     fun createNotificationChannel(context: Context) {
         val name = "You have new messages."
         val importance = NotificationManager.IMPORTANCE_DEFAULT
@@ -42,7 +59,12 @@ object MessageNotification {
                 } else {
                     TODO("VERSION.SDK_INT < O")
                 }
-                val pendingIntent = PendingIntent.getActivity(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+                val pendingIntent = PendingIntent.getActivity(
+                    context,
+                    requestCode,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                )
                 val builder = NotificationCompat.Builder(context, CHANNEL_ID)
                     .setContentTitle("Enable Notifications")
                     .setContentText("Please enable notifications for this app.")
@@ -58,10 +80,38 @@ object MessageNotification {
     }
 
     fun sendNotification(context: Context, message: Message) {
+
+
+        val contentView = RemoteViews(context.packageName, R.layout.notification_message)
+        contentView.setTextViewText(R.id.notification_message_sender, message.senderId.toString())
+        contentView.setTextViewText(R.id.notification_message_text, message.text)
+        contentView.setImageViewResource(R.id.notification_message_image, R.drawable.ic_user)
+
+
         val builder =
-            NotificationCompat.Builder(context, CHANNEL_ID).setSmallIcon(R.drawable.ic_user)
-                .setContentTitle("You have new messages.").setContentText(message.text)
+            NotificationCompat.Builder(context, CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setStyle(NotificationCompat.DecoratedCustomViewStyle())
                 .setPriority(NotificationManager.IMPORTANCE_DEFAULT)
+                .setCustomContentView(contentView)
+
+        builder.setContent(contentView)
+
+        val notificationTarget = NotificationTarget(
+            context,
+            R.id.notification_message_image,
+            contentView,
+            builder.build(),
+            NOTIFICATION_ID
+        )
+
+
+            Glide.with(context)
+                .asBitmap()
+                .load(R.drawable.ic_user)
+                .into(notificationTarget)
+
+
 
         with(NotificationManagerCompat.from(context)) {
             if (ActivityCompat.checkSelfPermission(
