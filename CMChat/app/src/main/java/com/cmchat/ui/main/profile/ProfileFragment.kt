@@ -13,6 +13,7 @@ import com.cmchat.cmchat.R
 import com.cmchat.cmchat.databinding.FragmentProfileBinding
 import com.cmchat.model.User
 import com.cmchat.ui.popups.AddFriendPopup
+import com.cmchat.util.ImageHandler
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -91,12 +92,12 @@ class ProfileFragment : Fragment() {
     }
 
     private fun putProfileImage() {
-        Glide.with(requireContext()).load(user.profileImage).placeholder(R.drawable.ic_user)
+        Glide.with(requireContext()).load(ImageHandler.IMAGE_GETTER_URL+user.profileImage).placeholder(R.drawable.ic_user)
             .into(binding.profileImage)
     }
 
     private fun putBackgroundImage() {
-        Glide.with(requireContext()).load(user.backgroundImage)
+        Glide.with(requireContext()).load(ImageHandler.IMAGE_GETTER_URL+user.backgroundImage)
             .placeholder(R.drawable.enter_text_background).into(binding.profileBackgroundImage)
     }
 

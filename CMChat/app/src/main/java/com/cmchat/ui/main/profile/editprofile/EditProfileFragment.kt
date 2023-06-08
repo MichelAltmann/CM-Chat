@@ -2,10 +2,12 @@ package com.cmchat.ui.main.profile.editprofile
 
 import android.app.Activity
 import android.app.DatePickerDialog
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,19 +30,19 @@ import java.util.Calendar
 import java.util.GregorianCalendar
 import java.util.Locale
 
-class EditProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener  {
+class EditProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
 
     private lateinit var imagePickerLauncher: ActivityResultLauncher<Intent>
 
-    private var _binding : FragmentEditProfileBinding? = null
+    private var _binding: FragmentEditProfileBinding? = null
     private val binding get() = _binding!!
     private var imgClicked = 0
 
     private val application by lazy {
         requireActivity().applicationContext as Application
     }
-    private var backgroundImage : ByteArray? = null
-    private var profileImage : ByteArray? = null
+    private var backgroundImage: String? = null
+    private var profileImage: String? = null
     private val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     private var calendar = Calendar.getInstance()
 
@@ -85,6 +87,21 @@ class EditProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener  {
         bioEt.setText(user.bio)
         birthdateEt.setText(formatter.format(user.birthday!!))
 
+        doneBtnClick(nicknameEt, usernameEt, bioEt, birthdateEt, user)
+
+        binding.editProfileEditCancelBtn.setOnClickListener {
+            findNavController().navigateUp()
+        }
+
+    }
+
+    private fun doneBtnClick(
+        nicknameEt: EditText,
+        usernameEt: EditText,
+        bioEt: EditText,
+        birthdateEt: EditText,
+        user: User
+    ) {
         binding.editProfileEditDoneBtn.setOnClickListener {
             val nickname = nicknameEt.text.toString()
             val username = usernameEt.text.toString()
@@ -99,39 +116,61 @@ class EditProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener  {
 
             val date = formatter.parse(birthdateEt.text.toString())
 
-            if (user.backgroundImage.contentEquals(backgroundImage)){
+            if (user.backgroundImage.contentEquals(backgroundImage)) {
                 backgroundImage = null
             }
 
-            if (user.profileImage.contentEquals(profileImage)){
+            if (user.profileImage.contentEquals(profileImage)) {
                 profileImage = null
             }
 
-            val updatedUser = User(user.id, user.email, nickname,username,null, date, profileImage, backgroundImage, bio, null, 0, 0)
+            val updatedUser = User(
+                user.id,
+                user.email,
+                nickname,
+                username,
+                null,
+                date,
+                profileImage,
+                backgroundImage,
+                bio,
+                null,
+                0,
+                0
+            )
 
             viewModel.edit(updatedUser)
         }
-
-        binding.editProfileEditCancelBtn.setOnClickListener {
-            findNavController().navigateUp()
-        }
-
     }
 
     private fun userEditObserver() {
+
         viewModel.userResponse.observe(viewLifecycleOwner) {
-            Toast.makeText(requireContext(), "Profile edited Successfully!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Profile edited Successfully!", Toast.LENGTH_SHORT)
+                .show()
             findNavController().navigateUp()
         }
+
         viewModel.error.observe(viewLifecycleOwner) {
-            if (it.message == "Username already in use"){
+            if (it.message == "Username already in use") {
                 binding.editProfileUsername.error = it.message
                 binding.editProfileUsername.requestFocus()
             }
         }
+
+        viewModel.bgResponse.observe(viewLifecycleOwner) {
+            backgroundImage = it.imageId
+            Log.i(TAG, "userEditObserver: ")
+            populateBackground()
+        }
+
+        viewModel.profileResponse.observe(viewLifecycleOwner) {
+            profileImage = it.imageId
+            populateProfileImage()
+        }
     }
 
-    private fun invalidBirthDate(birthdate : String, birthdateEt: EditText) : Boolean{
+    private fun invalidBirthDate(birthdate: String, birthdateEt: EditText): Boolean {
         if (birthdate == "") {
             birthdateEt.error = "Invalid date."
             birthdateEt.requestFocus()
@@ -140,7 +179,7 @@ class EditProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener  {
         return false
     }
 
-    private fun invalidUsername(username : String,usernameEt: EditText): Boolean {
+    private fun invalidUsername(username: String, usernameEt: EditText): Boolean {
         if (username == "") {
             usernameEt.error = "Invalid Username."
             usernameEt.requestFocus()
@@ -149,7 +188,7 @@ class EditProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener  {
         return false
     }
 
-    private fun invalidNickname(nickname : String, nicknameEt: EditText): Boolean {
+    private fun invalidNickname(nickname: String, nicknameEt: EditText): Boolean {
         if (nickname == "") {
             nicknameEt.error = "Invalid Nickname."
             nicknameEt.requestFocus()
@@ -194,11 +233,9 @@ class EditProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener  {
 
                 if (byteArray != null) {
                     if (imgClicked == 1) {
-                        backgroundImage = byteArray
-                        populateBackground()
+                        viewModel.uploadImage(byteArray, 1)
                     } else if (imgClicked == 2) {
-                        profileImage = byteArray
-                        populateProfileImage()
+                        viewModel.uploadImage(byteArray, 2)
                     }
                 }
             }
@@ -209,14 +246,17 @@ class EditProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener  {
         imagePickerLauncher.launch(intent)
     }
 
-    private fun populateBackground(){
+    private fun populateBackground() {
         if (backgroundImage != null) {
-            Glide.with(requireContext()).load(backgroundImage).into(binding.editProfileBackgroundImage)
+            Glide.with(requireContext()).load(ImageHandler.IMAGE_GETTER_URL + backgroundImage)
+                .into(binding.editProfileBackgroundImage)
         }
     }
-    private fun populateProfileImage(){
+
+    private fun populateProfileImage() {
         if (profileImage != null) {
-            Glide.with(requireContext()).load(profileImage).into(binding.editProfileImage)
+            Glide.with(requireContext()).load(ImageHandler.IMAGE_GETTER_URL + profileImage)
+                .into(binding.editProfileImage)
         }
     }
 
@@ -225,7 +265,7 @@ class EditProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener  {
     }
 
     override fun onDateSet(p0: DatePicker?, year: Int, month: Int, day: Int) {
-        calendar = GregorianCalendar(year,month,day)
+        calendar = GregorianCalendar(year, month, day)
         updateBirthdate()
     }
 

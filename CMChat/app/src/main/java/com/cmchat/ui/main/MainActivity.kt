@@ -15,6 +15,7 @@ import com.cmchat.cmchat.R
 import com.cmchat.cmchat.databinding.ActivityMainBinding
 import com.cmchat.model.User
 import com.cmchat.ui.main.chat.ChatFragment
+import com.cmchat.util.ImageHandler
 
 class MainActivity : AppCompatActivity() {
 
@@ -73,7 +74,7 @@ class MainActivity : AppCompatActivity() {
     }
     private fun updateUser(){
         user = application.getUser()
-        Glide.with(applicationContext).load(user.profileImage).placeholder(R.drawable.ic_user).into(binding.profileIcon)
+        Glide.with(applicationContext).load(ImageHandler.IMAGE_GETTER_URL+user.profileImage).placeholder(R.drawable.ic_user).into(binding.profileIcon)
     }
 
 }

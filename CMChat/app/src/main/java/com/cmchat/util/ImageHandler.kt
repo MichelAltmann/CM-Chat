@@ -12,6 +12,7 @@ import java.io.IOException
 
 object ImageHandler {
 
+    const val IMAGE_GETTER_URL = "http://10.147.17.129:8081/image?imageId="
     fun uriToByteArray(uri: Uri, activity: Activity): ByteArray? {
         val contentResolver = activity.contentResolver
         val inputStream = contentResolver.openInputStream(uri)
