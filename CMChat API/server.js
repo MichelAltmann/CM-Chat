@@ -70,10 +70,10 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 app.post("/upload", upload.single("image"), (req, res) => {
-  if (req.file == null) {
+  const image = req.file;
+  if (image == null) {
     return res.status(400).json({ message: "Bad request." });
   }
-  const image = req.file;
 
   const imageId = image.filename;
 
@@ -96,24 +96,14 @@ app.post("/login", (req, res) => {
 
       const profileBuffer = row.profileImage;
       const backgroundBuffer = row.backgroundImage;
-      var profileImage = null;
-
-      if (profileBuffer != null) {
-        profileImage = Array.from(Buffer.from(profileBuffer));
-      }
-      var backgroundImage = null;
-
-      if (backgroundBuffer != null) {
-        backgroundImage = Array.from(Buffer.from(backgroundBuffer));
-      }
 
       const user = {
         id: row.id,
         nickname: row.nickname,
         username: row.username,
         birthday: row.birthday,
-        profileImage: profileImage,
-        backgroundImage: backgroundImage,
+        profileImage: row.profileImage,
+        backgroundImage: row.backgroundImage,
         bio: row.bio,
         createdDate: row.createdDate,
         deleted: row.deleted,
@@ -169,26 +159,13 @@ app.post("/edit", (req, res) => {
         if (data.length > 0) {
           row = data[0];
 
-          const profileBuffer = row.profileImage;
-          const backgroundBuffer = row.backgroundImage;
-          var profileImage = null;
-
-          if (profileBuffer != null) {
-            profileImage = Array.from(Buffer.from(profileBuffer));
-          }
-          var backgroundImage = null;
-
-          if (backgroundBuffer != null) {
-            backgroundImage = Array.from(Buffer.from(backgroundBuffer));
-          }
-
           const editedUser = {
             id: row.id,
             nickname: row.nickname,
             username: row.username,
             birthday: row.birthday,
-            profileImage: profileImage,
-            backgroundImage: backgroundImage,
+            profileImage: row.profileImage,
+            backgroundImage: row.backgroundImage,
             bio: row.bio,
           };
           return res.json(editedUser);
