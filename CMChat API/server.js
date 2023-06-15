@@ -18,6 +18,10 @@ const app = express();
 app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
 app.use(bodyParser.json({ limit: "10mb" }));
 app.use(cors({ origin: "*" }));
+app.use((req, res, next) => {
+  res.setHeader("Content-Type", "text/html; charset=utf-8");
+  next();
+});
 const server = http.createServer(app);
 const io = socketIO(server, {
   cors: {
@@ -171,26 +175,23 @@ app.post("/edit", (req, res) => {
       user.bio,
     ];
 
-    var profileBuffer = null;
-    var backgroundBuffer = null;
-
     if (user.profileImage != null) {
-      profileBuffer = Buffer.from(user.profileImage);
       sql = sql.concat(", profileImage = ?");
-      userEdit.push(profileBuffer);
+      userEdit.push(user.profileImage);
     }
     if (user.backgroundImage != null) {
-      backgroundBuffer = Buffer.from(user.backgroundImage);
       sql = sql.concat(", backgroundImage = ?");
-      userEdit.push(backgroundBuffer);
+      userEdit.push(user.backgroundImage);
     }
 
     sql = sql.concat("where id = ?;");
     userEdit.push(user.id);
 
     con.query(sql, userEdit, (error, data) => {
-      if (error)
+      if (error) {
+        console.log(error);
         return res.status(500).json({ message: "Internal server error." });
+      }
       const userSql = "SELECT * FROM user WHERE id = ?;";
       con.query(userSql, user.id, (error, data) => {
         if (error)

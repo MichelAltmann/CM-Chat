@@ -1,5 +1,6 @@
 package com.cmchat.ui.main.profile.editprofile
 
+import android.R
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.ContentValues.TAG
@@ -7,10 +8,16 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.Editable
+import android.text.InputFilter
+import android.text.InputFilter.LengthFilter
+import android.text.InputType
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.Toast
@@ -19,16 +26,18 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
-import com.cmchat.util.DatePickerFragment
-import com.cmchat.util.ImageHandler
 import com.cmchat.application.Application
 import com.cmchat.cmchat.databinding.FragmentEditProfileBinding
 import com.cmchat.model.User
+import com.cmchat.util.DatePickerFragment
+import com.cmchat.util.ImageHandler
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.GregorianCalendar
 import java.util.Locale
+import kotlin.math.max
+
 
 class EditProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
 
@@ -66,6 +75,33 @@ class EditProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
         backgroundImage = user.backgroundImage
         profileImage = user.profileImage
 
+        val editText: EditText = binding.editProfileBio
+        val maxLines = 5
+        editText.maxLines = maxLines
+        val filters = arrayOf<InputFilter>(InputFilter { source, _, _, _, _, _ ->
+            val newLineCount = (source ?: "").count { it == '\n' } + editText.lineCount
+            if (newLineCount <= maxLines) null else ""
+        })
+        editText.filters = filters
+
+
+//        editText.addTextChangedListener(object : TextWatcher {
+//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+//
+//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+//
+//            override fun afterTextChanged(s: Editable?) {
+//                val lineCount = editText.lineCount
+//                if (lineCount >= 5) {
+//                    editText.inputType =
+//                        editText.inputType and EditorInfo.TYPE_TEXT_FLAG_MULTI_LINE.inv()
+//                } else {
+//                    editText.inputType =
+//                        editText.inputType or EditorInfo.TYPE_TEXT_FLAG_MULTI_LINE
+//                }
+//            }
+//        })
+
         populateBackground()
 
         populateProfileImage()
@@ -79,6 +115,8 @@ class EditProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
         calendarFabClick()
 
         userEditObserver()
+
+        onBirthdateText()
 
         val nicknameEt = binding.editProfileNickname
         val usernameEt = binding.editProfileUsername
@@ -270,6 +308,29 @@ class EditProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
 
     private fun updateBirthdate() {
         binding.editProfileBirthdate.setText(formatter.format(calendar.time))
+    }
+
+    private fun onBirthdateText() {
+        binding.editProfileBirthdate.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
+
+            override fun afterTextChanged(s: Editable?) {
+                var text = s.toString()
+                if (text.isNotEmpty() && text.last() != '/') {
+                    val formattedText = StringBuilder(text)
+                    when (text.length) {
+                        3, 6 -> {
+                            formattedText.insert(text.length - 1, "/")
+                            binding.editProfileBirthdate.setText(formattedText.toString())
+                            binding.editProfileBirthdate.setSelection(formattedText.length)
+                        }
+                    }
+                }
+            }
+
+        })
     }
 
     override fun onDateSet(p0: DatePicker?, year: Int, month: Int, day: Int) {

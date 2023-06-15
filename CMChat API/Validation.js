@@ -43,7 +43,10 @@ class Validation {
   checkUsername(user, callback) {
     const usernameSql = "SELECT * FROM user WHERE username = ?";
     this.con.query(usernameSql, user.username, (error, data) => {
-      if (error) return callback("Internal server error.", null);
+      if (error) {
+        console.log(error);
+        return callback("Internal server error.", null);
+      }
       if (data.length > 0 && data[0].id != user.id) {
         return callback("Username already in use", null);
       } else {
@@ -57,7 +60,9 @@ class Validation {
     this.checkEmail(user.email, (error, result) => {
       if (error) return res.status(500).json({ message: error });
       this.checkUsername(user, (error, result) => {
-        if (error) return res.status(500).json({ message: error });
+        if (error) {
+          return res.status(500).json({ message: error });
+        }
         const sql =
           "INSERT INTO user(id, email, password,nickname, username, birthday, profileImage, backgroundImage, bio, createdDate, deleted, isSuspended)" +
           "VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
@@ -78,6 +83,7 @@ class Validation {
             user.isSuspended,
           ],
           (error, data) => {
+            console.log(error);
             if (error) return res.send(error);
             res.status(200).json({ message: "Signup Successful" });
           }

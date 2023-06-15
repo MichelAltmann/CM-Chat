@@ -58,7 +58,7 @@ class EditProfileViewModel(private val repository: RepositoryInterface, private 
                 }
             }
             is NetworkResponse.Failed -> {
-                _error.value = response.error!!
+                _error.value = response.error
             }
         }
     }
