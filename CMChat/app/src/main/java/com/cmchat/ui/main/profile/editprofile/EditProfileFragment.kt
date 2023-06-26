@@ -1,6 +1,5 @@
 package com.cmchat.ui.main.profile.editprofile
 
-import android.R
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.ContentValues.TAG
@@ -10,14 +9,11 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.InputFilter
-import android.text.InputFilter.LengthFilter
-import android.text.InputType
 import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.Toast
@@ -36,7 +32,6 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.GregorianCalendar
 import java.util.Locale
-import kotlin.math.max
 
 
 class EditProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
@@ -84,24 +79,6 @@ class EditProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
         })
         editText.filters = filters
 
-
-//        editText.addTextChangedListener(object : TextWatcher {
-//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-//
-//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-//
-//            override fun afterTextChanged(s: Editable?) {
-//                val lineCount = editText.lineCount
-//                if (lineCount >= 5) {
-//                    editText.inputType =
-//                        editText.inputType and EditorInfo.TYPE_TEXT_FLAG_MULTI_LINE.inv()
-//                } else {
-//                    editText.inputType =
-//                        editText.inputType or EditorInfo.TYPE_TEXT_FLAG_MULTI_LINE
-//                }
-//            }
-//        })
-
         populateBackground()
 
         populateProfileImage()
@@ -134,7 +111,7 @@ class EditProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
             if (user.profileImage != profileImage) {
                 viewModel.deleteImage(profileImage)
             }
-            if (user.backgroundImage != backgroundImage){
+            if (user.backgroundImage != backgroundImage) {
                 viewModel.deleteImage(backgroundImage)
             }
         }

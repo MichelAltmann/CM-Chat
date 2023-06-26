@@ -1,5 +1,6 @@
 package com.cmchat.model
 
+import java.io.Serializable
 import java.util.Date
 
 class Friend(
@@ -12,4 +13,4 @@ class Friend(
     val username: String,
     val nickname: String,
     val status: Int // 0 - pending 1 - accepted 2 - refused
-)
+) : Serializable

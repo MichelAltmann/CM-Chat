@@ -11,7 +11,7 @@ import com.cmchat.util.ImageHandler
 class FriendsAdapter : RecyclerView.Adapter<FriendsAdapter.ViewHolder>() {
 
     private val friends : ArrayList<Friend> = arrayListOf()
-    lateinit var friendClick : (Int) -> Unit
+    lateinit var friendClick : (Friend) -> Unit
 
     inner class ViewHolder(private val binding : UserItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(friend : Friend) {
@@ -20,7 +20,7 @@ class FriendsAdapter : RecyclerView.Adapter<FriendsAdapter.ViewHolder>() {
             binding.userLastMessageTime.text = "00:00"
             Glide.with(binding.userImage).load(ImageHandler.IMAGE_GETTER_URL+friend.profileImage).into(binding.userImage)
             itemView.setOnClickListener {
-                friendClick.invoke(friend.id)
+                friendClick.invoke(friend)
             }
         }
     }

@@ -13,14 +13,19 @@ import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.cmchat.util.ImageHandler
 import com.cmchat.application.Application
+import com.cmchat.cmchat.R
 import com.cmchat.cmchat.databinding.FragmentChatBinding
+import com.cmchat.model.Friend
 import com.cmchat.model.Message
 import com.cmchat.model.User
 import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+@Suppress("DEPRECATION")
 class ChatFragment : Fragment() {
 
     private var _binding: FragmentChatBinding? = null
@@ -36,7 +41,7 @@ class ChatFragment : Fragment() {
     private lateinit var imagePickerLauncher: ActivityResultLauncher<Intent>
     private lateinit var myApplication: Application
     private lateinit var user: User
-    private var id = 0
+    private lateinit var friend : Friend
     private val viewModel by viewModel<ChatViewModel>()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,11 +58,13 @@ class ChatFragment : Fragment() {
 
         myApplication = requireActivity().applicationContext as Application
 
-        val user = myApplication.getUser()
+        user = myApplication.getUser()
 
-        id = arguments?.getInt("id")!!
+        friend = arguments?.getSerializable("friend") as Friend
 
-        Log.i(ContentValues.TAG, "onCreate: " + id + " " + user.id)
+        setupToolbar()
+
+        Log.i(ContentValues.TAG, "onCreate: " + friend + " " + user.id)
 
         val socket = myApplication.getSocket()
 
@@ -87,14 +94,14 @@ class ChatFragment : Fragment() {
                         val messageJson = createJsonMessage(
                             user,
                             binding.textInput.text.toString(),
-                            id,
+                            friend.id,
                             byteArray,
                             status = "sending"
                         )
                         messages.add(
                             Message(
                                 user.id,
-                                id,
+                                friend.id,
                                 user.nickname,
                                 user.profileImage,
                                 binding.textInput.text.toString(),
@@ -121,14 +128,14 @@ class ChatFragment : Fragment() {
                 val messageJson = createJsonMessage(
                     user,
                     binding.textInput.text.toString(),
-                    id,
+                    friend.id,
                     null,
                     status = "sending"
                 )
                 messages.add(
                     Message(
                         user.id,
-                        id,
+                        friend.id,
                         user.nickname,
                         user.profileImage,
                         binding.textInput.text.toString(),
@@ -144,6 +151,18 @@ class ChatFragment : Fragment() {
         }
 
 
+    }
+
+    private fun setupToolbar() {
+        Glide.with(requireContext()).load(ImageHandler.IMAGE_GETTER_URL+friend.profileImage).placeholder(
+            R.drawable.ic_user).into(binding.profileIcon)
+        binding.fragmentChatBack.setOnClickListener {
+            findNavController().navigateUp()
+        }
+        binding.toolbarTitleText.setText(friend.nickname)
+        binding.fragmentChatCall.setOnClickListener {
+
+        }
     }
 
     private fun createJsonMessage(

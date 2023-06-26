@@ -6,13 +6,33 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.cmchat.ui.main.profile.ProfileFragment">
 
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/toolbar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            style="@style/MyActionBar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="CMChat" >
+
+        </com.google.android.material.appbar.MaterialToolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:id="@+id/profile_background_image"
         android:scaleType="centerCrop"
         tools:src="@tools:sample/backgrounds/scenic"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/toolbar_layout"/>
 
     <androidx.cardview.widget.CardView
         android:layout_width="100dp"

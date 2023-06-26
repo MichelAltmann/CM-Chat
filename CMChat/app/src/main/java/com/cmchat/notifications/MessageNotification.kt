@@ -51,12 +51,13 @@ object MessageNotification {
                     context,
                     requestCode,
                     intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
+                    PendingIntent.FLAG_IMMUTABLE
                 )
                 val builder = NotificationCompat.Builder(context, CHANNEL_ID)
                     .setContentTitle("Enable Notifications")
                     .setContentText("Please enable notifications for this app.")
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setSmallIcon(R.drawable.ic_launcher_foreground)
                     .setContentIntent(pendingIntent)
                     .setAutoCancel(true)
                 val notification = builder.build()

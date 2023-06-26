@@ -101,6 +101,8 @@ class ProfileFragment : Fragment() {
             .placeholder(R.drawable.enter_text_background).into(binding.profileBackgroundImage)
     }
 
+
+
     private fun friendsRequestObserver() {
         viewModel.friendsRequestResponse.observe(viewLifecycleOwner) {
             binding.profileFriendsRequestRecycler.adapter = adapter
