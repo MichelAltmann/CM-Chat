@@ -8,8 +8,8 @@
         android:layout_height="40dp"
         android:scaleType="centerCrop"
         android:id="@+id/notification_message_image"
+        android:background="@drawable/curve_background"
         android:layout_centerVertical="true"/>
-
 
 <!--    <ImageView-->
 <!--        android:layout_width="15dp"-->

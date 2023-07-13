@@ -11,6 +11,7 @@ import android.os.Build
 import android.provider.Settings
 import android.widget.RemoteViews
 import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.bumptech.glide.Glide
@@ -27,6 +28,7 @@ object MessageNotification {
     fun createNotificationChannel(context: Context) {
         val name = "You have new messages."
         val importance = NotificationManager.IMPORTANCE_DEFAULT
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(CHANNEL_ID, name, importance)
 
@@ -39,13 +41,15 @@ object MessageNotification {
                     Manifest.permission.POST_NOTIFICATIONS
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
-                val requestCode = 123 // Replace with your own request code
+                val requestCode = 430
                 val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
                         .putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
                         .putExtra(Settings.EXTRA_CHANNEL_ID, CHANNEL_ID)
                 } else {
-                    TODO("VERSION.SDK_INT < O")
+                    Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
+                        .putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+                        .putExtra(Settings.EXTRA_CHANNEL_ID, CHANNEL_ID)
                 }
                 val pendingIntent = PendingIntent.getActivity(
                     context,

@@ -62,6 +62,10 @@ dependencies {
     // coroutines
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
 
+    // webSocket and WebRTC
+    implementation 'com.mesibo.api:webrtc:1.0.5'
+    implementation 'org.java-websocket:Java-WebSocket:1.5.3'
+
     implementation "com.github.bumptech.glide:glide:4.13.2"
 
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'

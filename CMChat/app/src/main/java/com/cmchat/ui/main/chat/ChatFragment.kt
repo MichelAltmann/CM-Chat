@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.telecom.InCallService.VideoCall
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +23,7 @@ import com.cmchat.cmchat.databinding.FragmentChatBinding
 import com.cmchat.model.Friend
 import com.cmchat.model.Message
 import com.cmchat.model.User
+import com.cmchat.ui.main.videocall.VideoCallActivity
 import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -161,7 +163,8 @@ class ChatFragment : Fragment() {
         }
         binding.toolbarTitleText.setText(friend.nickname)
         binding.fragmentChatCall.setOnClickListener {
-
+            val intent = Intent(requireContext(), VideoCallActivity::class.java)
+            startActivity(intent)
         }
     }
 
