@@ -31,6 +31,118 @@ const io = socketIO(server, {
   },
 });
 
+// webSocket server for handling calls
+
+const WebSocket = require("websocket").server;
+const webSocket = new WebSocket({ httpServer: server });
+
+const users = [];
+
+webSocket.on("request", (req) => {
+  const connection = req.accept();
+  // console.log(connection);
+
+  connection.on("message", (message) => {
+    const data = JSON.parse(message.utf8Data);
+    const user = findUser(data.name);
+
+    switch (data.type) {
+      case "store_user":
+        if (user != null) {
+          connection.send(
+            JSON.stringify({
+              type: "user already exists",
+            })
+          );
+          return;
+        }
+        const newUser = {
+          name: data.name,
+          conn: con.connection,
+        };
+        users.push(newUser);
+        break;
+      case "start_call":
+        let userToCall = findUser(data.target);
+
+        if (userToCall) {
+          connection.send(
+            JSON.stringify({
+              type: "call_response",
+              data: "user is ready for call",
+            })
+          );
+        } else {
+          connection.send(
+            JSON.stringify({
+              type: "call_response",
+              data: "user is not online",
+            })
+          );
+        }
+
+        break;
+
+      case "create_offer":
+        let userToReceiveOffer = findUser(data.target);
+
+        if (userToReceiveOffer) {
+          userToReceiveOffer.conn.send(
+            JSON.stringify({
+              type: "offer_received",
+              name: data.name,
+              data: data.data.sdp,
+            })
+          );
+        }
+        break;
+      case "create_answer":
+        let userToReceiveAnswer = fiondUser(data.target);
+        if (userToReceiveAnswer) {
+          userToReceiveAnswer.conn.send(
+            JSON.stringify({
+              type: "answer_received",
+              name: data.name,
+              data: data.data.sdp,
+            })
+          );
+        }
+        break;
+
+      case "ice_candidate":
+        let userToReceiveIceCandidate = findUser(data.target);
+        if (userToReceiveIceCandidate) {
+          userToReceiveIceCandidate.conn.send(
+            JSON.stringify({
+              type: "ice_candidate",
+              name: data.name,
+              data: {
+                sdpMLineIndex: data.data.sdpMLineIndex,
+                sdpMid: data.data.sdpMid,
+                sdpCandidate: data.data.sdpCandidate,
+              },
+            })
+          );
+        }
+        break;
+    }
+  });
+
+  connection.on("close", () => {
+    users.forEach((user) => {
+      if (user.conn === connection) {
+        users.splice(users.indexOf(user), 1);
+      }
+    });
+  });
+});
+
+function findUser(name) {
+  users.forEach((user) => {
+    if (name === user.name) return user;
+  });
+}
+
 app.use("/images", express.static(path.join("images")));
 
 app.get("/image", (req, res) => {
@@ -43,7 +155,6 @@ app.get("/image", (req, res) => {
 
 io.on("connection", (socket) => {
   console.log("A user connected! " + socket.id);
-
   socket.on("disconnect", () => {
     console.log("A client disconnected");
   });
