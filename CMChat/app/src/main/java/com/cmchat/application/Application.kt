@@ -6,6 +6,7 @@ import com.cmchat.application.socket.SocketController
 import com.cmchat.application.socket.SocketHandler
 import com.cmchat.model.User
 import com.cmchat.notifications.MessageNotification
+import com.cmchat.webrtc.SocketRepository
 import io.socket.client.Socket
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -19,6 +20,8 @@ class Application : Application() {
     private lateinit var loggedUser : User
 
     private lateinit var socketController: SocketController
+
+    private lateinit var socketRepository: SocketRepository
 
     private var currentFragment = 0
     override fun onCreate() {
@@ -48,6 +51,14 @@ class Application : Application() {
 
     fun getController() : SocketController {
         return socketController
+    }
+
+    fun setSocketRepository(socketRepository: SocketRepository) {
+        this.socketRepository = socketRepository
+    }
+
+    fun getSocketRepository() : SocketRepository {
+        return socketRepository
     }
 
     fun setUser(user : User) {

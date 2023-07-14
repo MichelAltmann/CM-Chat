@@ -27,7 +27,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name="com.cmchat.ui.main.videocall.VideoCallActivity"
+            android:name="com.cmchat.ui.main.chat.videocall.VideoCallActivity"
             android:exported="false"
             android:theme="@style/Theme.CMChat.noActionBar"/>
         <activity

@@ -23,7 +23,9 @@ import com.cmchat.cmchat.databinding.FragmentChatBinding
 import com.cmchat.model.Friend
 import com.cmchat.model.Message
 import com.cmchat.model.User
-import com.cmchat.ui.main.videocall.VideoCallActivity
+import com.cmchat.ui.main.MainActivity
+import com.cmchat.ui.main.chat.videocall.VideoCallActivity
+import com.cmchat.webrtc.models.MessageModel
 import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -43,7 +45,7 @@ class ChatFragment : Fragment() {
     private lateinit var imagePickerLauncher: ActivityResultLauncher<Intent>
     private lateinit var myApplication: Application
     private lateinit var user: User
-    private lateinit var friend : Friend
+    private lateinit var friend: Friend
     private val viewModel by viewModel<ChatViewModel>()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -153,18 +155,24 @@ class ChatFragment : Fragment() {
         }
 
 
+
     }
 
     private fun setupToolbar() {
-        Glide.with(requireContext()).load(ImageHandler.IMAGE_GETTER_URL+friend.profileImage).placeholder(
-            R.drawable.ic_user).into(binding.profileIcon)
+        Glide.with(requireContext()).load(ImageHandler.IMAGE_GETTER_URL + friend.profileImage)
+            .placeholder(
+                R.drawable.ic_user
+            ).into(binding.profileIcon)
         binding.fragmentChatBack.setOnClickListener {
             findNavController().navigateUp()
         }
         binding.toolbarTitleText.setText(friend.nickname)
         binding.fragmentChatCall.setOnClickListener {
-            val intent = Intent(requireContext(), VideoCallActivity::class.java)
-            startActivity(intent)
+            myApplication.getSocketRepository().sendMessageToSocket(
+                MessageModel(
+                    "start_call", user.username, friend.username, null
+                )
+            )
         }
     }
 

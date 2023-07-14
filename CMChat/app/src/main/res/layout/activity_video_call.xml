@@ -41,27 +41,7 @@
     </LinearLayout>
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/incomingCallLayout"
-        android:id="@+id/whoToCallLayout">
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:hint="who to call ?"
-            android:layout_margin="30dp"
-            android:id="@+id/targetUserNameEt"/>
-        <androidx.appcompat.widget.AppCompatButton
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_below="@id/targetUserNameEt"
-            android:layout_marginHorizontal="30dp"
-            android:text="call"
-            android:id="@+id/callBtn"/>
-    </RelativeLayout>
-    <RelativeLayout
-        android:layout_width="match_parent"
         android:id="@+id/callLayout"
-        android:visibility="gone"
         tools:visibility="visible"
         android:layout_height="match_parent">
         <org.webrtc.SurfaceViewRenderer
