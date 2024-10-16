@@ -1,2 +1,2 @@
 # CM-Chat
-Development of the chat side of the Chores Manager app
+CM-Chat is a unfinished chat app made with kotlin and javascript, that was supposed to have integrated fuctionalities with another Chores-Manager app that was not made.
