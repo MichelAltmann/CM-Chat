@@ -47,7 +47,7 @@ class Repository(private val apiService: ApiService) : RepositoryInterface{
                 val errorMessage = try {
                     JSONObject(errorBody).getString("message")
                 } catch (e : JSONException){
-                    "Uknown error"
+                    e.message
                 }
                 NetworkResponse.Failed(Exception(errorMessage))
             }

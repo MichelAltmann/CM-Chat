@@ -158,8 +158,7 @@ class EditProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
                 backgroundImage,
                 bio,
                 null,
-                0,
-                0
+                false
             )
 
             viewModel.edit(updatedUser)

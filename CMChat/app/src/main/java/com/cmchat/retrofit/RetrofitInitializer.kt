@@ -1,6 +1,7 @@
 package com.cmchat.retrofit
 
 import android.content.Context
+import com.google.gson.GsonBuilder
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -9,7 +10,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-private const val BASE_URL = "http://10.147.17.129:8081/"
+private const val BASE_URL = "http://10.147.19.222:3000/"
 
 class RetrofitInitializer {
 
@@ -26,8 +27,13 @@ class RetrofitInitializer {
                 .readTimeout(60, TimeUnit.SECONDS).addInterceptor(logger)
                 .build()
 
+            // adding gson formatter for haskell needs
+            val gson = GsonBuilder()
+                .setDateFormat("yyyy-MM-dd")
+                .create()
+
             return Retrofit.Builder().baseUrl(BASE_URL).client(client)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(CoroutineCallAdapterFactory()).build()
                 .create(ApiService::class.java)
 

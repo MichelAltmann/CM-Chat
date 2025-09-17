@@ -13,6 +13,5 @@ class User(
     val backgroundImage : String?,
     val bio : String?,
     val createdDate : Date?,
-    val deleted : Int,
-    val isSuspended : Int
+    val deleted : Boolean,
 )

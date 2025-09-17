@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.Toast
@@ -12,6 +13,7 @@ import com.cmchat.util.DatePickerFragment
 import com.cmchat.cmchat.databinding.ActivitySignUpBinding
 import com.cmchat.model.User
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import retrofit2.http.Tag
 import java.math.BigInteger
 import java.security.MessageDigest
 import java.text.SimpleDateFormat
@@ -67,14 +69,15 @@ class SignUpActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
             finish()
         }
         viewModel.error.observe(this){
+            Log.e("asd", "signUpObserver: " + it.message)
             when (it.message){
                 "Email already in use" -> {
                     emailEt.error = "Email already in use"
                     emailEt.requestFocus()
                 }
                 "Username already in use" -> {
-                    emailEt.error = "Username already in use"
-                    emailEt.requestFocus()
+                    usernameEt.error = "Username already in use"
+                    usernameEt.requestFocus()
                 }
             }
         }
@@ -151,7 +154,7 @@ class SignUpActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
             // Hashing the password
             val password = passwordHasher(passwordEt)
 
-            val user = User(0, email, "",username,password, date, null, null, null, createDate, 0, 0)
+            val user = User(0, email, "",username,password, date, null, null, null, createDate, false)
 
             viewModel.signup(user)
         }
