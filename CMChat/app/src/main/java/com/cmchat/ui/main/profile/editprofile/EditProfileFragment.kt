@@ -50,6 +50,8 @@ class EditProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
     }
     private var backgroundImage: String? = null
     private var profileImage: String? = null
+    private var tempProfileImage: String? = null
+    private var tempBackgroundImage: String? = null
     private val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     private var calendar = Calendar.getInstance()
 
@@ -181,12 +183,15 @@ class EditProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
         }
 
         viewModel.bgResponse.observe(viewLifecycleOwner) {
+            if(tempBackgroundImage != null) viewModel.deleteImage(tempBackgroundImage)
+            tempBackgroundImage = backgroundImage
             backgroundImage = it.imageId
-            Log.i(TAG, "userEditObserver: ")
             populateBackground()
         }
 
         viewModel.profileResponse.observe(viewLifecycleOwner) {
+            if(tempProfileImage != null) viewModel.deleteImage(tempProfileImage)
+            tempProfileImage = profileImage
             profileImage = it.imageId
             populateProfileImage()
         }
@@ -256,8 +261,10 @@ class EditProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
                 if (byteArray != null) {
                     if (imgClicked == 1) { // 1 == background
                         viewModel.uploadImage(byteArray, 1)
+                        if (backgroundImage != null) viewModel.deleteImage(backgroundImage)
                     } else if (imgClicked == 2) { // 2 == profile
                         viewModel.uploadImage(byteArray, 2)
+                        if (profileImage != null) viewModel.deleteImage(profileImage)
                     }
                 }
             }
