@@ -72,7 +72,7 @@ class ProfileFragment : Fragment() {
 
         binding.profileUsername.text = user.username
 
-        binding.profileBio.text = user.bio
+        binding.profileBio.text = user.biography
 
         val formatter = SimpleDateFormat("dd 'of' MMMM yyyy", Locale.getDefault())
 

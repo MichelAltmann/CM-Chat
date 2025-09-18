@@ -27,6 +27,7 @@ import com.cmchat.cmchat.databinding.FragmentEditProfileBinding
 import com.cmchat.model.User
 import com.cmchat.util.DatePickerFragment
 import com.cmchat.util.ImageHandler
+import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -103,7 +104,7 @@ class EditProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
         val birthdateEt = binding.editProfileBirthdate
         nicknameEt.setText(user.nickname)
         usernameEt.setText(user.username)
-        bioEt.setText(user.bio)
+        bioEt.setText(user.biography)
         birthdateEt.setText(formatter.format(user.birthday!!))
 
         doneBtnClick(nicknameEt, usernameEt, bioEt, birthdateEt, user)
@@ -111,9 +112,11 @@ class EditProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
         binding.editProfileEditCancelBtn.setOnClickListener {
             findNavController().navigateUp()
             if (user.profileImage != profileImage) {
+                viewModel.deleteImage(tempProfileImage)
                 viewModel.deleteImage(profileImage)
             }
             if (user.backgroundImage != backgroundImage) {
+                viewModel.deleteImage(tempBackgroundImage)
                 viewModel.deleteImage(backgroundImage)
             }
         }
@@ -150,7 +153,7 @@ class EditProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
             }
 
             val updatedUser = User(
-                user.id,
+                user.userId,
                 user.email,
                 nickname,
                 username,
@@ -162,6 +165,9 @@ class EditProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
                 null,
                 false
             )
+
+            val userJson = Gson().toJson(updatedUser)
+            Log.i(TAG, "doneBtnClick: " + userJson)
 
             viewModel.edit(updatedUser)
         }
@@ -176,6 +182,7 @@ class EditProfileFragment : Fragment(), DatePickerDialog.OnDateSetListener {
         }
 
         viewModel.error.observe(viewLifecycleOwner) {
+            Log.e(TAG, "userEditObserver: " + it.message)
             if (it.message == "Username already in use") {
                 binding.editProfileUsername.error = it.message
                 binding.editProfileUsername.requestFocus()

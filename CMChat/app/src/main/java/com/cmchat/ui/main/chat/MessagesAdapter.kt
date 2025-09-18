@@ -19,7 +19,7 @@ class MessagesAdapter : RecyclerView.Adapter<MessagesAdapter.ViewHolder>() {
     inner class ViewHolder(private val binding: MessageItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(message: Message){
             if (message.image == null){
-                if (message.senderId == user.id){
+                if (message.senderId == user.userId){
                     binding.userMessage.visibility = View.VISIBLE
                     binding.userMessageText.text = message.text
                     binding.friendMessage.visibility = View.GONE
@@ -29,7 +29,7 @@ class MessagesAdapter : RecyclerView.Adapter<MessagesAdapter.ViewHolder>() {
                     binding.userMessage.visibility = View.GONE
                 }
             } else {
-                if (message.senderId == user.id){
+                if (message.senderId == user.userId){
                     binding.userMessage.visibility = View.VISIBLE
                     Glide.with(binding.userMessageImage).load(message.image).into(binding.userMessageImage)
                     binding.friendMessage.visibility = View.GONE

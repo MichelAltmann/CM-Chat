@@ -3,7 +3,7 @@ package com.cmchat.model
 import java.util.Date
 
 class User(
-    val id : Int,
+    val userId : Int,
     val email : String?,
     val nickname : String?,
     val username : String,
@@ -11,7 +11,7 @@ class User(
     val birthday : Date?,
     val profileImage : String?,
     val backgroundImage : String?,
-    val bio : String?,
+    val biography : String?,
     val createdDate : Date?,
     val deleted : Boolean,
 )

@@ -68,12 +68,12 @@ class ChatFragment : Fragment() {
 
         setupToolbar()
 
-        Log.i(ContentValues.TAG, "onCreate: " + friend + " " + user.id)
+        Log.i(ContentValues.TAG, "onCreate: " + friend + " " + user.userId)
 
         val socket = myApplication.getSocket()
 
         viewModel.messageResponse.observe(viewLifecycleOwner) {
-            if (user.id == it.senderId) messages.removeLast()
+            if (user.userId == it.senderId) messages.removeLast()
             messages.add(it)
             messagesAdapter.update(messages, user)
             binding.messagesRecycler.scrollToPosition(messages.size - 1)
@@ -104,7 +104,7 @@ class ChatFragment : Fragment() {
                         )
                         messages.add(
                             Message(
-                                user.id,
+                                user.userId,
                                 friend.id,
                                 user.nickname,
                                 user.profileImage,
@@ -138,7 +138,7 @@ class ChatFragment : Fragment() {
                 )
                 messages.add(
                     Message(
-                        user.id,
+                        user.userId,
                         friend.id,
                         user.nickname,
                         user.profileImage,
@@ -179,12 +179,12 @@ class ChatFragment : Fragment() {
     private fun createJsonMessage(
         user: User,
         text: String,
-        id: Int,
+        userId: Int,
         image: ByteArray?,
         status: String
     ): String {
         val message = Message(
-            user.id, id,
+            user.userId, userId,
             user.nickname,
             user.profileImage, text, image, status
         )

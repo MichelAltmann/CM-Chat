@@ -24,7 +24,7 @@ class ProfileViewModel(private val repository: RepositoryInterface, private val 
     var user = application.getUser()
 
     fun getFriends() = viewModelScope.launch{
-        when (val response = repository.getFriends(user.id, 0)) {
+        when (val response = repository.getFriends(user.userId, 0)) {
             is NetworkResponse.Success -> {
                 _friendsRequestResponse.value = response.data!!
             }
@@ -41,7 +41,7 @@ class ProfileViewModel(private val repository: RepositoryInterface, private val 
     val requestError : LiveData<Exception> = _requestError
 
     fun acceptRequest(friendId : Int) = viewModelScope.launch {
-        when (val response = repository.acceptFriend(user.id, friendId)) {
+        when (val response = repository.acceptFriend(user.userId, friendId)) {
             is NetworkResponse.Success -> {
                 _requestResponse.value = response.data!!
             }
@@ -52,7 +52,7 @@ class ProfileViewModel(private val repository: RepositoryInterface, private val 
     }
 
     fun refuseRequest(friendId: Int) = viewModelScope.launch {
-        when (val response = repository.refuseFriend(user.id, friendId)) {
+        when (val response = repository.refuseFriend(user.userId, friendId)) {
             is NetworkResponse.Success -> {
                 _requestResponse.value = response.data!!
             }

@@ -17,7 +17,7 @@ class SocketController(private val application: Application){
 
     @Synchronized
     fun newMessages() {
-        socket.on("newMessage" + user.id) { args ->
+        socket.on("newMessage" + user.userId) { args ->
             if (args[0] != null) {
                 val messageJson = args[0] as JSONObject
                 val gson = Gson()
@@ -26,7 +26,7 @@ class SocketController(private val application: Application){
 
                 if (application.getCurrentFragment() == R.id.ChatFragment) {
                     newMessage.invoke(message)
-                } else if (message.senderId != user.id){
+                } else if (message.senderId != user.userId){
                     MessageNotification.sendNotification(application.applicationContext, message)
                 }
 

@@ -25,7 +25,7 @@ class AddFriendPopupViewModel(private val repository : RepositoryInterface, priv
     var username = ""
 
     fun addFriend() = viewModelScope.launch {
-        when(val response = repository.addFriend(user.id, username)){
+        when(val response = repository.addFriend(user.userId, username)){
             is NetworkResponse.Success -> {
                 _friendAddResponse.value = response.data!!
             }

@@ -54,7 +54,7 @@ interface ApiService {
         @Body user : User
     ) : Response<InfoResponse>
 
-    @POST("edit/")
+    @POST("editUser/")
     suspend fun edit(
         @Body user : User
     ) : Response<User>
