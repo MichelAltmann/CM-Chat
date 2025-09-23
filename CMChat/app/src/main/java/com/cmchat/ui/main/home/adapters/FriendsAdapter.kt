@@ -16,7 +16,7 @@ class FriendsAdapter : RecyclerView.Adapter<FriendsAdapter.ViewHolder>() {
     inner class ViewHolder(private val binding : UserItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(friend : Friend) {
             binding.userName.text = friend.username
-            binding.userLastMessage.text = friend.id.toString()
+            binding.userLastMessage.text = friend.userId.toString()
             binding.userLastMessageTime.text = "00:00"
             Glide.with(binding.userImage).load(ImageHandler.IMAGE_GETTER_URL+friend.profileImage).into(binding.userImage)
             itemView.setOnClickListener {

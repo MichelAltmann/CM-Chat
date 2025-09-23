@@ -25,14 +25,14 @@ class FriendsRequestAdapter : RecyclerView.Adapter<FriendsRequestAdapter.ViewHol
             Glide.with(binding.friendUserImage).load(ImageHandler.IMAGE_GETTER_URL+friend.profileImage).placeholder(R.drawable.ic_user).into(binding.friendUserImage)
             binding.friendUserBirthdate.text = formatter.format(friend.birthday)
             itemView.setOnClickListener {
-                friendRequestClick.invoke(friend.id)
+                friendRequestClick.invoke(friend.userId)
             }
 
             binding.friendRequestAcceptBtn.setOnClickListener {
-                acceptRequestClick.invoke(friend.id)
+                acceptRequestClick.invoke(friend.userId)
             }
             binding.friendRequestRefuseBtn.setOnClickListener {
-                refuseRequestClick.invoke(friend.id)
+                refuseRequestClick.invoke(friend.userId)
             }
         }
     }

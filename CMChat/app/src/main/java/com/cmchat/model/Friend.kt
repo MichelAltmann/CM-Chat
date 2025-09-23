@@ -8,7 +8,7 @@ class Friend(
     val bio: String,
     val birthday: Date,
     val createdDate: String,
-    val id: Int,
+    val userId: Int,
     val profileImage: String?,
     val username: String,
     val nickname: String,

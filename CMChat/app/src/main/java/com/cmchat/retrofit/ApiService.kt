@@ -27,25 +27,25 @@ interface ApiService {
 
     @GET("friends/")
     suspend fun getFriends(
-        @Query("id") id : Int,
+        @Query("userId") id : Int,
         @Query("status") status : Int
     ) : Response<FriendsResponse>
 
     @POST("friend/request")
     suspend fun addFriend(
-        @Query("id") id : Int,
+        @Query("userId") id : Int,
         @Query("friendUsername") friendUsername : String
     ) : Response<InfoResponse>
 
     @POST("friend/request/accept")
     suspend fun acceptFriend(
-        @Query("id") id : Int,
+        @Query("userId") id : Int,
         @Query("friendId") friendId : Int
     ) : Response<InfoResponse>
 
     @POST("friend/request/refuse")
     suspend fun refuseFriend(
-        @Query("id") id : Int,
+        @Query("userId") id : Int,
         @Query("friendId") friendId : Int
     ) : Response<InfoResponse>
 

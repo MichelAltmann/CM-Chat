@@ -6,7 +6,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.telecom.InCallService.VideoCall
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -23,8 +22,6 @@ import com.cmchat.cmchat.databinding.FragmentChatBinding
 import com.cmchat.model.Friend
 import com.cmchat.model.Message
 import com.cmchat.model.User
-import com.cmchat.ui.main.MainActivity
-import com.cmchat.ui.main.chat.videocall.VideoCallActivity
 import com.cmchat.webrtc.models.MessageModel
 import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -98,14 +95,14 @@ class ChatFragment : Fragment() {
                         val messageJson = createJsonMessage(
                             user,
                             binding.textInput.text.toString(),
-                            friend.id,
+                            friend.userId,
                             byteArray,
                             status = "sending"
                         )
                         messages.add(
                             Message(
                                 user.userId,
-                                friend.id,
+                                friend.userId,
                                 user.nickname,
                                 user.profileImage,
                                 binding.textInput.text.toString(),
@@ -132,14 +129,14 @@ class ChatFragment : Fragment() {
                 val messageJson = createJsonMessage(
                     user,
                     binding.textInput.text.toString(),
-                    friend.id,
+                    friend.userId,
                     null,
                     status = "sending"
                 )
                 messages.add(
                     Message(
                         user.userId,
-                        friend.id,
+                        friend.userId,
                         user.nickname,
                         user.profileImage,
                         binding.textInput.text.toString(),
